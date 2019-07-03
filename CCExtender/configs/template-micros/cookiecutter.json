@@ -1,0 +1,9 @@
+{
+    "project_name": "My New OSS Library",
+    "project_slug": "{{cookiecutter.project_name|lower|replace(' ', '-')|replace('_', '-')}}",
+    "project_description": "A new OSS library written in Go",
+    "notification_email": "security-engineering@atlassian.com",
+    "project_namespace": "asecurityteam",
+    "compose": "",
+    "service": ""
+}

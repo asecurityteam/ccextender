@@ -1,0 +1,144 @@
+name: {{cookiecutter.project_name}}
+description: "{{cookiecutter.project_description}}"
+links:
+  healthcheck:
+    uri: /healthcheck
+  source:
+    url: 'https://bitbucket.org/{{cookiecutter.project_namespace}}/{{cookiecutter.project_slug}}'
+notifications:
+  email: security-engineering@atlassian.com
+organization: CISO-Security
+buildNumber: ${ARTIFACT_VERSION}
+compose:
+  app:
+    image: ${ARTIFACT_NAME} #docker.atl-paas.net/sox/{{cookiecutter.project_namespace}}/sec-{{cookiecutter.project_slug}}
+    tag: ${ARTIFACT_VERSION}
+    ports:
+      - "8081:8081"
+      # - "8083:8083"
+    deployRestartCount: 3
+    links:
+      - statsd-service-sidecar
+  {{cookiecutter.compose}}
+  # gateway:
+  #   image: ${GW_ARTIFACT_NAME} #docker.atl-paas.net/sox/{{cookiecutter.project_namespace}}/sec-{{cookiecutter.project_slug}}-gateway
+  #   tag: ${ARTIFACT_VERSION}
+  #   deployRestartCount: 3
+  #   links:
+  #     - app
+  #     - statsd-service-sidecar
+  #   ports:
+  #     - "8082:8082"
+  # gateway-external:
+  #   image: ${GWE_ARTIFACT_NAME} #docker.atl-paas.net/sox/{{cookiecutter.project_namespace}}/sec-{{cookiecutter.project_slug}}-gateway-external
+  #   tag: ${ARTIFACT_VERSION}
+  #   deployRestartCount: 3
+  #   links:
+  #     - app
+  #     - statsd-service-sidecar
+  #   ports:
+  #     - "8080:8080"
+  # benthos:
+  #   image: ${BENTHOS_ARTIFACT_NAME}
+  #   tag: ${ARTIFACT_VERSION}
+  #   deployRestartCount: 3
+  #   links:
+  #     - gateway
+  #     - statsd-service-sidecar
+  #   ports:
+  #     - "4195:4195"
+  # streamer-manager:
+  #   image: ${SM_ARTIFACT_NAME} #docker.atl-paas.net/sox/{{cookiecutter.project_namespace}}/sec-{{cookiecutter.project_slug}}
+  #   tag: ${ARTIFACT_VERSION}
+  #   links:
+  #     - benthos
+  #     - statsd-service-sidecar
+  #   ports:
+  #     - "8085:8085"
+  #   deployRestartCount: 3
+  # lifecycle:
+  #   image: docker.atl-paas.net/sox/asecurityteam/microslifecycle
+  #   tag: latest
+  #   links:
+  #     - streamer-manager
+  #     - statsd-service-sidecar
+  #   deployRestartCount: 3
+  # statsd-service-sidecar:
+  #   image: docker.atl-paas.net/sox/observability/statsd-service-sidecar
+  #   tag: stable
+  #   deployRestartCount: 3
+loadBalancer:
+  type: ALB
+  single: true
+network:
+  ingress: internal
+  egress: internet-only
+scaling:
+  min: 2
+  max: 5
+  instance: m5.large
+  metrics:
+    CPUUtilization:
+        Threshold:
+            Lower: 10
+            Upper: 50
+        Period:
+            Lower: 300
+            Upper: 60
+        EvaluationPeriods: 1
+requiresAsap: true
+lifecycleEvents:
+  timeout: 60
+  source: queue
+config:
+  environmentVariables:
+    MICROSLIFECYCLE_HTTP_NOTIFICATIONS: "http://streamer-manager:8085/lifecycle"
+    STREAMERMANAGER_HTTPSERVER_ADDRESS: ":8085"
+    STREAMERMANAGER_LOGGER_OUTPUT: "STDOUT"
+    STREAMERMANAGER_LOGGER_LEVEL: "INFO"
+    STREAMERMANAGER_STATS_OUTPUT: "DATADOG"
+    STREAMERMANAGER_STATS_DATADOG_PACKETSIZE: "32768"
+    STREAMERMANAGER_STATS_DATADOG_TAGS: ""
+    STREAMERMANAGER_STATS_DATADOG_FLUSHINTERVAL: "10s"
+    STREAMERMANAGER_STATS_DATADOG_ADDRESS: "statsd-service-sidecar:8125"
+    STREAMERMANAGER_DIRECTORY: "/configs"
+    STREAMERMANAGER_PATH: "/lifecycle"
+    STREAMERMANAGER_DESTINATION: "http://benthos:4195"
+    SERVERFULL_RUNTIME_HTTPSERVER_ADDRESS: ":8081"
+    SERVERFULL_RUNTIME_CONNSTATE_REPORTINTERVAL: "5s"
+    SERVERFULL_RUNTIME_CONNSTATE_HIJACKEDCOUNTER: "http.server.connstate.hijacked"
+    SERVERFULL_RUNTIME_CONNSTATE_CLOSEDCOUNTER: "http.server.connstate.closed"
+    SERVERFULL_RUNTIME_CONNSTATE_IDLEGAUGE: "http.server.connstate.idle.gauge"
+    SERVERFULL_RUNTIME_CONNSTATE_IDLECOUNTER: "http.server.connstate.idle"
+    SERVERFULL_RUNTIME_CONNSTATE_ACTIVEGAUGE: "http.server.connstate.active.gauge"
+    SERVERFULL_RUNTIME_CONNSTATE_ACTIVECOUNTER: "http.server.connstate.active"
+    SERVERFULL_RUNTIME_CONNSTATE_NEWGAUGE: "http.server.connstate.new.gauge"
+    SERVERFULL_RUNTIME_CONNSTATE_NEWCOUNTER: "http.server.connstate.new"
+    SERVERFULL_RUNTIME_LOGGER_OUTPUT: "STDOUT"
+    SERVERFULL_RUNTIME_LOGGER_LEVEL: "INFO"
+    SERVERFULL_RUNTIME_STATS_OUTPUT: "DATADOG"
+    SERVERFULL_RUNTIME_STATS_DATADOG_PACKETSIZE: "32768"
+    SERVERFULL_RUNTIME_STATS_DATADOG_TAGS: ""
+    SERVERFULL_RUNTIME_STATS_DATADOG_FLUSHINTERVAL: "10s"
+    SERVERFULL_RUNTIME_STATS_DATADOG_ADDRESS: "statsd-service-sidecar:8125"
+    SERVERFULL_RUNTIME_SIGNALS_INSTALLED: "OS"
+    SERVERFULL_RUNTIME_SIGNALS_OS_SIGNALS: "15 2"
+environmentOverrides:
+  adev-west2:
+    datadog:
+      agentEnabled: true
+    scaling:
+      min: 1
+      max: 3
+      instance: t2.medium
+    links:
+      semanticCheck: null
+    config:
+      environmentVariables:
+        # Custom overrides here.
+  prod-west2:
+    links:
+      semanticCheck: null
+    config:
+      environmentVariables:
+        # Custom overrides here.

@@ -1,0 +1,117 @@
+CCX_Version: 1.0
+standard-context:
+  - project_name
+  - project_slug
+  - project_description
+  - notification_email
+  - project_namespace
+  - extra1
+  - extra2
+  - extra3
+  - extra4
+  - extra5
+  - extra6
+  - extra7
+  - extra8
+decisions:
+  benthos:
+    prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
+    benthos:
+      - benthos
+      - gateway
+    benthos-IO:
+      - benthos-outbound
+      - benthos-inbound
+    benthos-super:
+      - benthos
+      - gateway
+      - benthos-outbound
+    benthos-double:
+      - benthos
+      - benthos-inbound
+      - benthos-outbound
+      - gateway
+      - benthos
+  gateway:
+    prompt: "Would you like to [1] install a gateway image?"
+    gateway:
+      - gateway
+  super-benthos:
+    prompt: "SUPER BENTHOS"
+    sbenthos:
+      - benthos
+    benthos2:
+      - benthos
+      - benthos-inbound
+    benthos3:
+      - benthos
+      - gateway
+      - benthos-outbound
+  super-gateway:
+    prompt: "SUPER GATEWAY"
+    gateway1:
+      - gateway
+      - gateway
+      - benthos
+    gateway2:
+      - benthos-outbound
+change-packs:
+  benthos:
+    template-makefile:
+      image_name: "BENTHOS_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos"
+      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_IMAGE_NAME)"
+      artifact_name: "BENTHOS_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS) \\"
+    template-benthos:
+    template-micros:
+      compose: "benthos:\n
+              \   image: ${BENTHOS_ARTIFACT_NAME}\n
+              \   tag: ${ARTIFACT_VERSION}\n
+              \   deployRestartCount: 3\n
+              \   links:\n
+              \     - gateway\n
+              \     - statsd-service-sidecar\n
+              \   ports:\n
+              \     - \"4195:4195\""
+      service: "benthos:\n
+              \   build:\n
+              \     context: .\n
+              \     dockerfile: benthos.Dockerfile\n
+              \     args:\n
+              \       REGISTRY: ${REGISTRY}\n
+              \   image: ${IMAGE}-benthos:${TAG}"
+  benthos-inbound:
+    template-makefile:
+      image_name: "BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input"
+      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS_INPUT_IMAGE_NAME := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_INPUT_IMAGE_NAME)"
+      artifact_name: "BENTHOS_INPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_INPUT_IMAGE_NAME)"
+  benthos-outbound:
+    template-makefile:
+      image_name: "BENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output"
+      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT_IMAGE_NAME := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_OUTPUT_IMAGE_NAME)"
+      artifact_name: "BENTHOS_OUTPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT_IMAGE_NAME) \\"
+  gateway:
+    template-makefile:
+      image_name: "Makefile Placeholder Gateway"
+    template-micros:
+      image_name: "Placeholder"
+    template-gateway:
+      image_name: "Placeholder"
+locations:
+  home:
+    - /go/src/ccextender/configs/
+  template-makefile:
+    - $!home$
+    - template-makefile/
+  template-gateway:
+    - $!home$
+    - template-gateway/
+  template-micros:
+    - $!home$
+    - template-micros/
+  template-benthos:
+    - $!home$
+    - template-benthos/
+  template-standards:
+    - $!home$
+    - template-standards/
+

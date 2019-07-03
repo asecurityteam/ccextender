@@ -1,0 +1,22 @@
+CCX_Version: 1.0
+standard-context:
+  - project_name
+decisions:
+  gateway:
+    prompt: "Would you like to [1] install a gateway image?"
+    gateway:
+      - gateway
+change-packs:
+  gateway:
+    template-gateway:
+      image_name: "Placeholder"
+locations:
+  home:
+    - /go/src/ccextender/configs/
+  template-gateway:
+    - $!home$
+    - template-gateway/
+  template-standards:
+    - $!home$
+    - template-standards/
+

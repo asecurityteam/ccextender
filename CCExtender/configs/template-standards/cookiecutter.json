@@ -1,0 +1,7 @@
+{
+    "project_name": "My new OSS service",
+    "project_slug": "my-new-oss-service",
+    "project_description": "A new OSS service written in Go",
+    "notification_email": "security-engineering@atlassian.com",
+    "project_namespace": "asecurityteam"
+}
