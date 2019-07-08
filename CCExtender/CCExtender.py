@@ -10,7 +10,7 @@ class CCExtender:
 
     test_mode = False
 
-    def __init__(self, ccx_config = "CCExtender.yaml", std_template = "template-standards", test_mode = None):
+    def __init__(self, ccx_config = "CCExtender.yaml", std_template = "template-standards", test_mode = None, outdir = "/go/src/mirror/"):
 
         # Output format
         # {
@@ -32,7 +32,7 @@ class CCExtender:
         output = dict()
 
         #config is a dictionary of CCExtender.yaml (or whatever config file is used)
-        config = self.load_config_yaml(ccx_config)
+        config = self.load_config_yaml(ccx_config, outdir)
         #templates is a dictionary pairing template names with their paths (or links)
         templates = self.get_templates(config)
         #defaults is a dictionary of default variable values, categorized by template
@@ -46,7 +46,7 @@ class CCExtender:
             bundled = output[template].copy()
             bundled.update(standards)
             #print bundled
-            cookiecutter(templates[template], no_input = True, extra_context = bundled, overwrite_if_exists=True, output_dir = "/go/src/mirror/")
+            cookiecutter(templates[template], no_input = True, extra_context = bundled, overwrite_if_exists=True, output_dir = outdir)
 
         return
 
@@ -179,9 +179,12 @@ class CCExtender:
 
         return changes
 
-    def load_config_yaml(self, ccx_config):
+    def load_config_yaml(self, ccx_config, shared_volume):
         config_file = OrderedDict()
-        config_file = open(ccx_config, 'r')
+        if self.test_mode:
+            config_file = open(ccx_config, 'r')
+        else:
+            config_file = open(shared_volume + ccx_config, 'r')
         return yaml.safe_load(config_file)
 
     def prompt_user_input(self, variable, default):
@@ -259,6 +262,7 @@ if __name__ == "__main__":
     parser.add_argument('--ccx_config', '-c', help="path to CCExtender configuration file", type=str)
     parser.add_argument('--std_template', '-s', help="path to cookiecutter template directory from which we will base our standard defaults")
     parser.add_argument('--test_mode', '-t', help="disables user input in favor of defaults for testing purposes")
+    parser.add_argument('--outdir', '-o', help="path that CCExtender should write to")
 
     args = vars(parser.parse_args())
 

@@ -7,6 +7,12 @@ RUN pip install codecov
 RUN pip3 install -U pytest
 RUN pip3 install pytest-cov
 RUN pip3 install oyaml
+# RUN export PIPENV_VENV_IN_PROJECT=1
+# RUN export PYTHONPATH="/home/ccextender/.local/"
+
+# RUN export PIPENV_PIPFILE="/go/src/ccextender/Pipfile"
+
+# RUN pip3 install pipenv
 
 # COPY . /go/src/Users/aslape/python/src/github.com/CCExtender/
 
@@ -28,6 +34,10 @@ RUN groupadd -r ccextender -g 1000 \
 
 #########################################
 
+# RUN pipenv install --system
+
 USER ccextender
 
-CMD [ "python", "-m", "CCExtender.CCExtender"]
+# ENTRYPOINT [ "pipenv", "--verbose", "run", "python", "-m", "CCExtender.CCExtender"]
+
+ENTRYPOINT [ "python", "-m", "CCExtender.CCExtender"]

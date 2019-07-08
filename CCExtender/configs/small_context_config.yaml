@@ -12,7 +12,7 @@ change-packs:
       image_name: "Placeholder"
 locations:
   home:
-    - /go/src/ccextender/configs/
+    - CCExtender/configs/
   template-gateway:
     - $!home$
     - template-gateway/

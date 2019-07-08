@@ -61,7 +61,7 @@ change-packs:
       image_name: "Placeholder"
 locations:
   home:
-    - /go/src/ccextender/configs/
+    - CCExtender/configs/
   template-makefile:
     - $!home$
     - template-makefile/

@@ -1,0 +1,14 @@
+[packages]
+pytest = "*"
+coverage = "*"
+setuptools = "*"
+pytest-cov = "*"
+oyaml = "*"
+pylint = "*"
+cookiecutter = "*"
+
+[requires]
+python_version = "3"
+
+[pipenv]
+allow_prereleases = true
