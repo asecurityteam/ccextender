@@ -11,7 +11,8 @@ PROJECT_PATH := $(subst $(GOPATH)/src/,,$(DIR))
 
 
 
-dep: ;
+dep:
+	pipenv install
 
 lint:
 	docker run -ti \

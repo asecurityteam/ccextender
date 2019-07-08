@@ -1,18 +1,20 @@
 FROM python:3.6 AS BASE
 
-RUN pip3 install -U setuptools cookiecutter
-RUN pip3 install -U pylint
-RUN pip install coverage
-RUN pip install codecov
-RUN pip3 install -U pytest
-RUN pip3 install pytest-cov
-RUN pip3 install oyaml
+# RUN pip3 install -U setuptools cookiecutter
+# RUN pip3 install -U pylint
+# RUN pip3 install coverage
+# RUN pip3 install codecov
+# RUN pip3 install -U pytest
+# RUN pip3 install pytest-cov
+# RUN pip3 install oyaml
 # RUN export PIPENV_VENV_IN_PROJECT=1
-# RUN export PYTHONPATH="/home/ccextender/.local/"
+# RUN export PATH="/home/ccextender/.local/share/virtualenvs/ccextender-eHKON4Y-"
 
 # RUN export PIPENV_PIPFILE="/go/src/ccextender/Pipfile"
 
-# RUN pip3 install pipenv
+# RUN apt-get install bash
+
+RUN pip install pipenv
 
 # COPY . /go/src/Users/aslape/python/src/github.com/CCExtender/
 
@@ -30,14 +32,20 @@ RUN groupadd -r ccextender -g 1000 \
     && useradd --no-log-init -r -g ccextender -u 1000 ccextender \
     && chown -R ccextender:ccextender /opt \
     && chown -R ccextender:ccextender /go \
-    && chown -R ccextender:ccextender /home/ccextender
+    && chown -R ccextender:ccextender /home/ccextender \
+    && chown -R ccextender:ccextender /usr/local/lib/python3.6/site-packages \
+    && chown -R ccextender:ccextender /usr/local/bin
 
 #########################################
 
-# RUN pipenv install --system
+# RUN pipenv shell
+
+RUN pipenv install --system --deploy
 
 USER ccextender
 
-# ENTRYPOINT [ "pipenv", "--verbose", "run", "python", "-m", "CCExtender.CCExtender"]
+# RUN source /home/ccextender/.local/share/virtualenvs/ccextender-eHKON4Y-/bin/activate
+
+# ENTRYPOINT [ "pipenv", "--three", "run", "python", "-m", "CCExtender.CCExtender"]
 
 ENTRYPOINT [ "python", "-m", "CCExtender.CCExtender"]

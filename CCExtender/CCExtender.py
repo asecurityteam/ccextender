@@ -1,9 +1,11 @@
+import sys
+sys.path.append("/home/ccextender/.local/share/virtualenvs/ccextender-eHKON4Y-/")
+
+import oyaml as yaml
 from cookiecutter import generate
 from cookiecutter.main import cookiecutter
 import os
-import oyaml as yaml
 from collections import OrderedDict
-import sys
 import argparse
 
 class CCExtender:
