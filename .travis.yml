@@ -1,0 +1,12 @@
+language: python
+sudo: false
+python:
+  - "3.6"
+services:
+  - docker
+script:
+  - make lint
+  - make test
+  - make coverage
+  - cd .pycoverage
+  - codecov -t f5022fb6-e891-4d19-babd-791ab1909bed
