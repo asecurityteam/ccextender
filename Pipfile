@@ -6,9 +6,10 @@ pytest-cov = "*"
 oyaml = "*"
 pylint = "*"
 cookiecutter = "*"
+pathlib2 = "*"
 
 [requires]
 python_version = "3"
 
-[pipenv]
-allow_prereleases = true
+# [pipenv]
+# allow_prereleases = true
