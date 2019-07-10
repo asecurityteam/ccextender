@@ -11,4 +11,4 @@ script:
   - make lint
   - make test
   - make coverage
-  - bash <(curl -s https://codecov.io/bash) -t f5022fb6-e891-4d19-babd-791ab1909bed
+  - bash <(curl -s https://codecov.io/bash) -f .pycoverage/.coverage -t f5022fb6-e891-4d19-babd-791ab1909bed
