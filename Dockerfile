@@ -48,4 +48,4 @@ USER ccextender
 
 # ENTRYPOINT [ "pipenv", "--three", "run", "python", "-m", "CCExtender.CCExtender"]
 
-ENTRYPOINT [ "python", "-m", "CCExtender.CCExtender"]
+ENTRYPOINT [ "python", "-m", "pkg.ccextender.ccextender"]

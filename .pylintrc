@@ -1,1 +1,5 @@
+[MESSAGES CONTROL]
 
+disable=
+    no-self-use,
+    import-error
