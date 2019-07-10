@@ -7,6 +7,7 @@ oyaml = "*"
 pylint = "*"
 cookiecutter = "*"
 pathlib2 = "*"
+codecov = "*"
 
 [requires]
 python_version = "3"
