@@ -1,9 +1,11 @@
 language: python
-sudo: true
+sudo: false
 python:
   - "3.6"
 services:
   - docker
+install:
+  - chmod 777 -R "$(pwd)"
 script:
   - make dep
   - make lint
