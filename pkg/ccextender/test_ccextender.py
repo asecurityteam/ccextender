@@ -133,7 +133,7 @@ def test_prompt_user_decision():
     '''Testing prompt user decision method of ccextender class'''
     test_ccx = CC_EXTENDER.prompt_user_decision(CONFIG_NORMAL["decisions"]["benthos"],
                                                 "benthos", "1")
-    assert test_ccx in (["benthos", "gateway"], test_ccx == ["gateway", "benthos"])
+    assert test_ccx in (["benthos", "gateway"], ["gateway", "benthos"])
 
 def test_interpret_decision():
     '''Testing interpret decision method of ccextender class'''
@@ -142,8 +142,8 @@ def test_interpret_decision():
 
 def test_black_box():
     '''Tests the ccextender application as a whole'''
-    os.system("python3 -m pkg.ccextender.ccextender -c " + CONFIG_PATH + " -s " + STANDARD_TEMPLATE + " -t "
-              + "True" + " -o " + ".")
+    os.system("python3 -m pkg.ccextender.ccextender -c " + CONFIG_PATH + " -s " + STANDARD_TEMPLATE
+              + " -t " + "True" + " -o " + ".")
     assert(os.path.isdir('my-new-oss-library')
            and os.path.isfile('my-new-oss-library/sec-my-new-oss-library.sd.yml'))
 
