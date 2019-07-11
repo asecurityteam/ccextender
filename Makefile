@@ -2,7 +2,7 @@
 
 IMAGE_NAME := ccextender
 DIR := $(shell pwd -L)
-VERSION := $(shell date -u +%s)
+VERSION := $(shell cat version)
 GOPATH := ${GOPATH}
 ifeq ($(GOPATH),)
 	GOPATH := ${HOME}/go
@@ -46,10 +46,10 @@ doc: ;
 docker-login: ;
 
 build:
-	docker build -t $(IMAGE_NAME) .
+	docker build -t $(ARTIFACT):$(VERSION) .
 
 run:
-	docker run -v $(DIR):/go/src/$(DIR) -ti $(IMAGE_NAME)
+	docker run -v $(DIR):/go/src/$(DIR) -ti $(ARTIFACT):$(VERSION)
 
 deploy: build
 	docker login -u=$(REGISTRY_USER) $(REGISTRY)
