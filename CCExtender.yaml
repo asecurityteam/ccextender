@@ -7,7 +7,8 @@ standard-context:
   - project_namespace
 decisions:
   benthos:
-    prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
+    query:
+      prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
     benthos:
       - benthos
       - gateway
@@ -15,7 +16,12 @@ decisions:
       - benthos-outbound
       - benthos-inbound
   gateway:
-    prompt: "Would you like to [1] install a gateway image?"
+    query:
+      prompt: "Would you like to [1] install a gateway image?"
+      # include-if:
+      #   - benthos
+      exclude-if:
+        - benthos-IO
     gateway:
       - gateway
 change-packs:

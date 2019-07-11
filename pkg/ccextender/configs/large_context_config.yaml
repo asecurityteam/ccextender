@@ -15,7 +15,8 @@ standard-context:
   - extra8
 decisions:
   benthos:
-    prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
+    query:
+      prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
     benthos:
       - benthos
       - gateway
@@ -33,11 +34,19 @@ decisions:
       - gateway
       - benthos
   gateway:
-    prompt: "Would you like to [1] install a gateway image?"
+    query:
+      prompt: "Would you like to [1] install a gateway image?"
+      include-if:
+        - benthos
     gateway:
       - gateway
   super-benthos:
-    prompt: "SUPER BENTHOS"
+    query:
+      prompt: "SUPER BENTHOS"
+      include-if:
+        - gateway
+      exclude-if:
+        - benthos
     sbenthos:
       - benthos
     benthos2:
@@ -48,7 +57,10 @@ decisions:
       - gateway
       - benthos-outbound
   super-gateway:
-    prompt: "SUPER GATEWAY"
+    query:
+      prompt: "SUPER GATEWAY"
+      exclude-if:
+        - gateway
     gateway1:
       - gateway
       - gateway

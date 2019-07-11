@@ -13,6 +13,7 @@ class CCExtender:
     prompts the user for decisions about how they wish the build to proceed.'''
 
     test_mode = False
+    past_decisions = list()
 
     def __init__(self, ccx_config="ccextender.yaml", std_template="template-standards",
                  test_mode=None, outdir="/go/src/mirror/"):
@@ -194,7 +195,11 @@ class CCExtender:
         Decision Block format
         block name:
         {
-            prompt: "<query asking for user decision>",
+            query:
+            {
+                prompt: "<query asking for user decision>",
+                include-if: <option from previous query
+            }
             option 1:
             {
                 - change pack
@@ -208,13 +213,27 @@ class CCExtender:
         }
         '''
 
-        prompt_string = decision_block["prompt"]
+        query_block = decision_block["query"]
+
+        prompt_string = query_block["prompt"]
 
         i = 0
         for choice in decision_block:
-            if choice != "prompt":
+            if choice != "query":
                 prompt_string.replace("%" + str(i), "[" + str(i) + "] " + choice)
             i += 1
+
+        if "include-if" in query_block.keys():
+            for condition in query_block["include-if"]:
+                if condition not in self.past_decisions:
+                    print(str(condition) + " NOT in " + str(self.past_decisions))
+                    return list()
+        if "exclude-if" in query_block.keys():
+            for condition in query_block["exclude-if"]:
+                if condition in self.past_decisions:
+                    print(str(condition) + " in " + str(self.past_decisions))
+                    return list()
+
 
         print("\n[" + block_name + "]")
         print(prompt_string)
@@ -226,7 +245,8 @@ class CCExtender:
 
         response = []
 
-        if decision != "prompt":
+        if decision != "query":
+            self.past_decisions.append(decision)
             for pack in decision_block[decision]:
                 response.append(pack)
 

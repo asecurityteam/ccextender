@@ -3,7 +3,8 @@ standard-context:
   - project_name
 decisions:
   gateway:
-    prompt: "Would you like to [1] install a gateway image?"
+    query:
+      prompt: "Would you like to [1] install a gateway image?"
     gateway:
       - gateway
 change-packs:
