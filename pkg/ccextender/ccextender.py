@@ -4,7 +4,7 @@ system.'''
 
 from collections import OrderedDict
 import argparse
-from cookiecutter import generate
+# from cookiecutter import generate
 from cookiecutter.main import cookiecutter
 import oyaml as yaml
 
@@ -97,7 +97,8 @@ class CCExtender:
         # for template in templates:
         #     if "template" in template:
         #         defaults[template] = generate.generate_context(templates[template] +
-        #                                                        "cookiecutter.json")["cookiecutter"]
+        #                                                        "cookiecutter.json")
+        # ["cookiecutter"]
 
         for variable in config["standard-context"]:
             defaults[std_template][variable] = config["standard-context"][variable]
