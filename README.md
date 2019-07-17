@@ -1,60 +1,84 @@
-<a id="markdown-ccextender---cookiecutter-extender" name="ccextender---cookiecutter-extender"></a>
-# CCExtender - Cookiecutter Extender
+<a id="markdown-CCExtender" name="CCExtender"></a>
+# CCExtender -- Cookiecutter with branching builds
+
+(Public github link to be added soon)
 
 <!-- TOC -->
 
-- [CCExtender - Cookiecutter Extender](#ccextender---cookiecutter-extender)
+- [CCExtender](#CCExtender)
     - [Overview](#overview)
+    - [Commands](#commands)
+    - [Installation](#installation)
     - [Usage](#usage)
-        - [For Shells Other than `bash`](#for-shells-other-than-bash)
-    - [Generate A New Project From Templates](#generate-a-new-project-from-templates)
-    - [Adding Commands](#adding-commands)
+    - [Configuration](#configuration)
+    - [Setting up your templates](#settingupyourtemplates)
+      - [Additive variable assignment](#additivevariableassignment)
+    - [Hello World](#helloworld)
+    - [Common Issues](#commonissues)
+    - [Extending CCExtender](#extendingccextender)
 
 <!-- /TOC -->
 
 <a id="markdown-overview" name="overview"></a>
 ## Overview
 
-CCExtender, or CCX, is a docker image that provides templatized repository creation, building off the open-source Cookiecutter application. It's key difference from typical templating software is its ability to create logical build paths, with branching logic.
+CCExtender, or CCX, is a repository construction application built on top of cookiecutter (a templating program). Its primary purpose is to provide a framework for logical, branching build paths that can create customized repositories based on user decisions.
 
-Features
+###### How CCExtender works, briefly
+1. You'll create various cookiecutter templates containing the building blocks of your typical repository setup. Using a few new techniques introduced by CCExtender, your templates will be ready to receive large and complicated packs of changes (change-packs).
+2. You'll write a configuration file where you define these so-called change-packs, along with the user prompts and build logic that will be used in constructing your future repos.
+3. From this point on, you'll simply run CCExtender against your configuration file whenever you want to create a repository. By answering the prompts written in the configuration file, you'll guide the build of each repository to fit your needs. CCExtender will save you time by making various configuration changes automatically, while also making sure your repository only has exactly what you need.
+
+
+###### What CCExtender is good for:
+- Developers that regularly create new repositories with similar structure and content
+- Anyone who wants to automate the creation of templatized files and folders
+
+###### What CCExtender is bad for:
+- One time repository creation. CCExtender is a way to front-load the work of creating many repositories, and won't bring much value to teams that only need one or two similar repos.
+
+<a id="markdown-commands" name="commands"></a>
+## Commands
 
 ```bash
 ccextender
     help
     --ccx_config, -c <Path to configuration file>
-    --std_template, -s <Path to template containing defaults for your standards> (See #standards)
-    --test_mode, -t #Activates test mode (which disables prompts for stdin)
+    --std_template, -s <Path to template containing defaults for your standards> #(See #standards)
+    --test_mode, -t # Activates test mode (which disables prompts for stdin)
     --outdir, -o <Path to desired repository location>
 ```
 
-<a id="markdown-overview" name="overview"></a>
+<a id="markdown-installation" name="installation"></a>
+## Installation
+
+#### Prequisites:
+
+Python 3
+
+oyaml - a python package allowing for yaml files to read as an ordered dictionary
+
+cookiecutter - a templating application
+
+
+```bash
+pip3 install cookiecutter oyaml
+```
+
+```bash
+pip3 install ccextender
+```
+
+<a id="markdown-usage" name="usage"></a>
 ## Usage
 
-To pull CCExtender from docker hub:
+CCExtender requires a yaml configuration file and at least one cookiecutter template directory to function.
 
-```bash
-docker pull registry.hub.docker.com/asecurityteam/ccextender:v1
-```
+For more information on how to set up cookiecutter templates, visit: https://cookiecutter.readthedocs.io/en/latest/first_steps.html
 
-```bash
-export DIR="$(pwd)"
-docker run -v ${DIR}:/go/src/mirror/ -ti registry.hub.docker.com/asecurityteam/ccextender:v1
-```
+For how to setup a configuration file, read the #Configuration section of this doc.
 
-If you would like to call it as bash function, add this to your .bashrc:
-
-```bash
-ccextender() {
-    local DIR
-    DIR="$(pwd)"
-    docker run -v ${DIR}:/go/src/mirror/ -ti registry.hub.docker.com/asecurityteam/ccextender:v1
-}
-```
-
-Essentially, assuming you've setup calling the container with the alias ccextender, use will look like this:
-
-1. Create a configuration file.
+#### 1. Create a configuration file.
 
 Your configuration file will contain the logic for your interactive build, directions to the templates you plan to use, and what templatized changes should be associated with your decisions.
 
@@ -64,9 +88,9 @@ By default, ccextender will look for a file named ccextender.yaml in your curren
 ccextender --ccx_config=/Users/me/Documents/myconfig.yaml
 ```
 
-Your configuration file must follow the YAML format. To see how to write a CCExtender config file, see #Configuration.
+Your configuration file must follow the YAML format. To see how to write a CCExtender config file, see [Configuration](#Configuration).
 
-2. Run CCExtender
+#### 2. Run CCExtender
 
 Once the configuration file is created, CCExtender will do the rest. All that remains is for you to respond to the prompts established in your YAML file.
 
@@ -82,12 +106,12 @@ To see available commands:
 ccextender help
 ```
 
-To use a specific template for the default values for your standards (#standards):
+To use a specific template for the default values for your standards:
 ```bash
 ccextender -s template-standards
 ```
 
-NOTE: This isn't a path or location of the template, but merely the template's directory name. You should add the templates location in the configuration file under the "locations" section.(#configuration)
+NOTE: This isn't a path or location of the template, but merely the template's directory name. You should add the templates location in the configuration file under the "locations" section. See [Configuration](#Configuration).
 
 To run using the default variables:
 
@@ -102,352 +126,462 @@ The default values for each command is:
 --test_mode, -t = None
 --outdir, -o = .
 ```
+<a id="markdown-configuration" name="configuration"></a>
+## Configuration
 
-## Configuration Files
-
-Sample config file, ccextender.yaml:
-
-```yaml
-CCX_Version: 1.0
-standard-context:
-  - project_name
-  - project_slug
-  - project_description
-  - notification_email
-  - project_namespace
-decisions:
-  benthos:
+```YAML
+CCX_Version: X.X # Non-essential as of version 1.1
+standard-context: # Standard variables that exist across most or all templates involved in build. This saves us the trouble of needing to re-type them for each template.
+  project_name: "Example default name" # "project_name" corresponds to a variable in a cookiecutter.json file, and the right side string is the default value. Users will have the option to replace this default value for all standard-context variables.
+  project_slug: "example-default-slug"
+  project_namespace: "example-team"
+decisions: # A series of decision blocks where the user responds to prompts with numerical choices, which then mark particular change-packs to be added into the repository.
+  decision-block-one: # Decision blocks consist of a query block, followed by a list of choice blocks
+    query: # query blocks contain the prompt given to the end-user and possibly some logic flags to indicate whether or not the decision-block should be run.
+      prompt: "Example question asking user to pick between [1] and [2]?" # CCExtender reads YAML files as ordered dicts, so the order of each choice is preserved, thus "choice-one" corresponds to 1 and "choice-two" corresponds to 2. A response of 0 will skip the decision block, and a blank response defaults to 1 (as of version 1.11 of CCX)
+    choice-one: # When a choice is selected, all change-packs under its block will be added to the new repository.
+      - change-pack-A # tag corresponds to the change-pack of the same name in the change-packs block
+      - change-pack-B
+    choice-two:
+      - change-pack-C
+  decision-block-two:
     query:
-      prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
-    benthos:
-      - benthos
-      - gateway
-    benthos-IO:
-      - benthos-outbound
-      - benthos-inbound
-  gateway:
+      prompt: "Example question asking user to pick between [1], [2], or [3]?"
+      exclude-if: # excludes this entire decision block if the user has picked choice-one in a previous decision block
+        - choice-one
+    2nd-choice-one:
+      - change-pack-D
+    2nd-choice-two:
+      - change-pack-E
+    2nd-choice-three:
+      - change-pack-D
+      - change-pack-F
+  decision-block-three:
     query:
-      prompt: "Would you like to [1] install a gateway image?"
+      prompt: "Would you like to pick [1]?"
+      include-if: # includes the decision block only if the user has selected both the of below choices
+        - 2nd-choice-three
+        - choice-two
       exclude-if:
-        - benthos-IO
-    gateway:
-      - gateway
-change-packs:
-  benthos:
+        - choice-two
+      3rd-choice-one:
+        - change-pack-G
+  change-packs: # change packs define which templates should be added into the repository, and in some cases, what variables should be set to for those templates.
+    change-pack-A:
+      template-makefile: # Refers to the template-makefile listed in the locations block
+        registry_link: "REGISTRY := registry.hub.docker.com" # corresponds to a variable called "registry_link" defined in the template-makefile's cookiecutter.json
+        environment: "ENVIRON := dev"
+      template-dockerfile:
+        pip_install: "pip install cookiecutter"
+    change-pack-B:
+      template-dockerfile:
+        pip_install: "pip install setuptools" #Since you can pick both change-pack-A and change-pack-B, which both set a different value for the same variable in template-dockerfile, how do we know which value is used? The answer is both. In the Dockerfile stored in template-dockerfile, the templatized variable {{cookiecutter.pip_install}} will be replaced with two lines of code (or more if other changepacks also set a value to pip_install). Essentially, when more than one value is set to a variable, it is appended to the current value as "\nnew value". Thus, in this case, where change-packs A and B are both used, we end up with "pip install cookiecutter\npip install setuptools" creating two lines in the place of the cookiecutter variable.
+    change-pack-C:
+      template-makefile:
+        registry_link: "REGISTRY := privateregistry.hub.docker.com"
+        environment: "ENVIRON := prod"
+    change-pack-D:
+      template-version:
+        version: "v2"
+    change-pack-E:
+      template-version:
+        version: "v3"
+    change-pack-F:
+      template-travis: # You don't need to set a variable to use a template. Here, this change pack will pull in the travis template without setting any cookiecutter variables. Note, if template-travis has variables in its cookiecutter.json that are not covered by the standard-context, you will need to include variable assignment here.
+    change-pack-G:
+      template-readme:
+      template-license:
+      template-dockerfile:
+        pip_install: "pip install pylint" # adds "\npip install pylint" to current value of pip_install
+  locations:
+    home:
+      - https://github.com/yourtemplates/ # you can reference github template repos directly
+    local_home:
+      - /Users/you/your-templates/ # you can also reference local directories
     template-makefile:
-      image_name: "BENTHOS_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos"
-      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_IMAGE_NAME)"
-      artifact_name: "BENTHOS_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS) \\"
-    template-benthos:
-    template-micros:
-      compose: "benthos:\n
-              \   image: ${BENTHOS_ARTIFACT_NAME}\n
-              \   tag: ${ARTIFACT_VERSION}\n
-              \   deployRestartCount: 3\n
-              \   links:\n
-              \     - gateway\n
-              \     - statsd-service-sidecar\n
-              \   ports:\n
-              \     - \"4195:4195\""
-      service: "benthos:\n
-              \   build:\n
-              \     context: .\n
-              \     dockerfile: benthos.Dockerfile\n
-              \     args:\n
-              \       REGISTRY: ${REGISTRY}\n
-              \   image: ${IMAGE}-benthos:${TAG}"
-  benthos-inbound:
-    template-makefile:
-      image_name: "BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input"
-      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS_INPUT_IMAGE_NAME := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_INPUT_IMAGE_NAME)"
-      artifact_name: "BENTHOS_INPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_INPUT_IMAGE_NAME)"
-  benthos-outbound:
-    template-makefile:
-      image_name: "BENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output"
-      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT_IMAGE_NAME := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_OUTPUT_IMAGE_NAME)"
-      artifact_name: "BENTHOS_OUTPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT_IMAGE_NAME) \\"
-  gateway:
-    template-makefile:
-      image_name: "Makefile Placeholder Gateway"
-    template-micros:
-      image_name: "Placeholder"
-    template-gateway:
-      image_name: "Placeholder"
-locations:
-  home:
-    - /go/src/ccextender/pkg/ccextender/configs/
-  template-makefile:
-    - $!home$
-    - template-makefile/
-  template-gateway:
-    - $!home$
-    - template-gateway/
-  template-micros:
-    - $!home$
-    - template-micros/
-  template-benthos:
-    - $!home$
-    - template-benthos/
-  template-standards:
-    - $!home$
-    - template-standards/
+      - $!home$ # To save time, you can create path shortcuts (like how we wrote home and local-home) and then add them in the ordered list here. CCExtender will then go through the list and append each section to the path string. In this case, we end up with https://github.com/yourtemplates/template-makefile
+      - template-makefile
+    template-dockerfile:
+      - $!home$
+      - template-dockerfile
+    template-version:
+      - $!home$
+      - template-version
+    template-travis:
+      - $!local_home$
+      - my-travis-template
+    template-readme:
+      - $!home$
+      - template-readme
+    template-license:
+      - https://github.com/licensing-template
+    template-standards:
+      - $!home$
+      - template-standards
 ```
 
-Let's break down this file section by section:
+<a id="markdown-settingupyourtemplates" name="settingupyourtemplates"></a>
+## Setting up your templates
 
-CCX Version
+Cookiecutter templates are fairly straightforward.
 
-```yaml
-CCX_Version: 1.0
+Their structure is:
+
+```
+template-example/
+    cookiecutter.json
+    <content to be templatized>
 ```
 
-While not necessary to run ccextender at the moment, future versions of ccextender might use different setups for their config files, and this value will become critical to how ccextender treats the file.
-
-Standards
-
-```yaml
-standard-context:
-  - project_name
-  - project_slug
-  - project_description
-  - notification_email
-  - project_namespace
-```
-
-Standards are variables that are common to all (or most) of our cookiecutter templates. In a multi-template build using regular cookiecutter, you'd have to answer these prompts over and over again, typing out the exact same responses by hand.
-
-By listing these variables here, you will only have to provide values for them once for all templates you are using. Their default values will be retrieved from the template-standards cookiecutter template (or whichever template you specify).
-
-Decisions:
-
-```yaml
-decisions:
-  benthos:
-    query:
-      prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
-    benthos:
-      - benthos
-      - gateway
-    benthos-IO:
-      - benthos-outbound
-      - benthos-inbound
-  gateway:
-    query:
-      prompt: "Would you like to [1] install a gateway image?"
-      include-if:
-        - benthos
-      exclude-if:
-        - benthos-IO
-    gateway:
-      - gateway
-```
-
-The Decisions section is the core of your build's logic. Here, you'll provide a series of "decision blocks", configuration units that consist of a query block, logical flags, and a series of options.
-
-Query block:
-
-```yaml
-query:
-      prompt: "Would you like to [1] install a gateway image?"
-      include-if:
-        - benthos
-      exclude-if:
-        - benthos-IO
-```
-
-The query block contains a:
-
-prompt - your question string to the user, where you give them numerical values to choose from. Since ccextender uses an ordered yaml, the numerical responses correspond to the list of options in ascending order. As in, when looking at:
-
-```yaml
-query:
-    prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
-benthos:
-    - benthos
-    - gateway
-benthos-IO:
-    - benthos-outbound
-    - benthos-inbound
-```
-
-... the "benthos" option would correspond to a '1' response and "benthos-IO" would correspond to a '2' response.
-
-conditions - these conditions rely on the user's previous decisions. Depending on how the conditions resolve, ccextender might choose to skip or include a prompt in the build. Currently, the only conditions include-if and exclude-if (to see about how to add more see #FutureDevelopment).
-
-Condition logic
-
-include-if - If the user has made one of the below decisions, run this decision             block.
-
-exclude-if - If the user has made one of the below decision, don't run this                 decision block.
-
-Options:
-
-```yaml
-benthos:
-    query:
-      prompt: "Would you like to install [1] a single benthos image or [2] a benthos IO setup?"
-    benthos:
-      - benthos
-      - gateway
-    benthos-IO:
-      - benthos-outbound
-      - benthos-inbound
-```
-
-In the above snippet, "benthos" and "benthos-IO" are options. When the user receives the prompt, their response will correlate with one of the options (or skip if the input 0, and the default value if they give no response).
-
-Each option has a list pointing to various changepacks, which hold the bundles templatized changes that will build the repository.
-
-Changepacks:
-
-```yaml
-change-packs:
-  benthos:
-    template-makefile:
-      image_name: "BENTHOS_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos"
-      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_IMAGE_NAME)"
-      artifact_name: "BENTHOS_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS) \\"
-    template-benthos:
-    template-micros:
-      compose: "benthos:\n
-              \   image: ${BENTHOS_ARTIFACT_NAME}\n
-              \   tag: ${ARTIFACT_VERSION}\n
-              \   deployRestartCount: 3\n
-              \   links:\n
-              \     - gateway\n
-              \     - statsd-service-sidecar\n
-              \   ports:\n
-              \     - \"4195:4195\""
-      service: "benthos:\n
-              \   build:\n
-              \     context: .\n
-              \     dockerfile: benthos.Dockerfile\n
-              \     args:\n
-              \       REGISTRY: ${REGISTRY}\n
-              \   image: ${IMAGE}-benthos:${TAG}"
-  benthos-inbound:
-    template-makefile:
-      image_name: "BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input"
-      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS_INPUT_IMAGE_NAME := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_INPUT_IMAGE_NAME)"
-      artifact_name: "BENTHOS_INPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_INPUT_IMAGE_NAME)"
-  benthos-outbound:
-    template-makefile:
-      image_name: "BENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output"
-      hack_name: "MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT_IMAGE_NAME := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_OUTPUT_IMAGE_NAME)"
-      artifact_name: "BENTHOS_OUTPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT_IMAGE_NAME) \\"
-  gateway:
-    template-makefile:
-      image_name: "Makefile Placeholder Gateway"
-    template-micros:
-      image_name: "Placeholder"
-    template-gateway:
-      image_name: "Placeholder"
-```
-
-If decision blocks are where the logic lives, change-blocks are where the templatization lives. Changepacks are activated when a user selects an option in the decision blocks that call them.
-
-Each change block points to various cookiecutter template directories. For each template, it may also contain a list of key-value pairs, representing templatized values that will added per the setup of its cookiecutter template.
-
-The values listed under each template directly correspond to the key-value pairs you'd see in a cookiecutter directory's cookiecutter.json file.
-
-Additive changes:
-
-If you've noticed above in the example, multiple change packs point to the same template directories, and may even use the same variable-value pairs. When two changepacks are activated, and they both use the same template and variable, those changes are NOT destructive. Instead, each additional use of the same template and variable causes the value to be appended to the previous value, where it will print on a new line below it. For example:
-
-Let's say you chose changepacks "benthos-inbound" and "benthos-outbound". You'll see that they both point to the template-makefile directory, and set a value for the image_name variable:
-
-```yaml
-benthos-inbound:
-    template-makefile:
-      image_name: "BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input"
-benthos-outbound:
-    template-makefile:
-      image_name: "BENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output"
-```
-In our hypothetical template-makefile directory, we have two files:
-
-cookiecutter.json
+The cookiecutter.json file is where you traditionally define your template variables, along with their default values. They might look something like this:
 
 ```json
 {
-    "project_name": "My New OSS Library",
-    "project_slug": "{{cookiecutter.project_name|lower|replace(' ', '-')|replace('_', '-')}}",
-    "project_description": "A new OSS library written in Go",
-    "notification_email": "security-engineering@atlassian.com",
-    "project_namespace": "asecurityteam",
-    "image_name": ""
+"greeting": "Hello World",
+"recipient": "You",
+"license": "MIT License"
 }
 ```
 
-and Makefile
+When you'd run cookiecutter, it would prompt you to enter values for each variable, and then replace all instances of {{cookiecutter.<variable name>}} in every file within the template, before copying them into your target directory.
 
-```Makefile
+CCExtender works differently, though. The only values you have to manually input are variables in your standards template (usually general stuff like project name, contact email, etc.) All the variables in the rest of your templates will be set by the change-packs you've configured in your configuration file.
+
+So let's say you run CCExtender and make a decision that triggers change-pack-A:
+
+```YAML
+change-pack-A:
+  template-makefile: # Refers to the template-makefile listed in the locations block
+    registry_link: "REGISTRY := registry.hub.docker.com" # corresponds to a variable called "registry_link" defined in the template-makefile's cookiecutter.json
+    environment: "ENVIRON := dev"
+  template-dockerfile:
+    pip_install: "RUN pip install cookiecutter"
+```
+
+Change-pack-A assigns values to variables in our makefile template and our docker file template's cookiecutter.json files. Those files might look like:
+
+template-makefile/cookiecutter.json
+```json
+{
+  "project_name": "My New Project",
+  "registry_link": "",
+  "environment": "ENVIRON := test"
+}
+```
+
+template-dockerfile/cookiecutter.json
+```json
+{
+  "project_name": "My New Project",
+  "pip_install": ""
+}
+```
+
+Then when CCExtender creates a new repository, it uses the variable assignments from change-pack-A for their corresponding cookiecutter variables. So you can think of the variable assignments in the change-pack blocks in our ccextender.yaml file to essentially take the place of your manually entering them in a traditionally cookiecutter session.
+
+<a id="markdown-additivevariableassignment" name="additivevariableassignment"></a>
+#### Additive Variable assignment
+
+CCExtender lets you assign multiple values to the same variable. For instance, let's look at the cookiecutter.json for the dockerfile template from earlier:
+
+template-dockerfile/cookiecutter.json
+```json
+{
+  "project_name": "My New Project",
+  "pip_install": ""
+}
+```
+
+The pip_install variable corresponds to {{cookiecutter.pip_install}} in the Dockerfile:
+
+Dockerfile
+```Dockerfile
 ...
-PROJECT_PATH := $(subst $(GOPATH)/src/,,$(DIR))
+COPY . somefolder/
 
-# Variables required for building and deploying internal Atlassian
-# Docker images and Micros services
-ENVIRON := dev
-APP_IMAGE_NAME := sec-$(shell basename $(DIR))
-{{cookiecutter.image_name}}
-IMAGE_PATH := /atlassian/asecurityteam
-ifeq ($(ENVIRON),prod)
-IMAGE_PATH := /sox/asecurityteam
-endif
+{{cookiecutter.pip_install}}
+
+RUN apt-get blahblahblah
 ...
 ```
 
-So, since we chose both benthos-inbound and benthos-outbound, CCExtender will templatize the image_name variable to equal:
+Now let's say you have a configuration file with a changepack section like this:
 
-```Makefile
-"BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input\nBENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output"
+ccextender.yaml
+```YAML
+change-pack-A:
+  template-dockerfile:
+    pip_install: "RUN pip install cookiecutter"
+change-pack-B:
+  template-dockerfile:
+    pip_install: "RUN pip install setuptools"
+change-pack-C:
+  template-dockerfile:
+    pip_install: "RUN pip install oyaml"
+    pip_install: "RUN pip install pylint"
 ```
 
-Which will be inserted to Makefile as:
+Now let's say we run CCExtender and our decisions lead to change packs A, B, and C being used. That means that pip_install is being assigned a value 4 times. After the first assignemnt, CCExtender appends each subsequent assigned value to the end of the current value string, separated by a '\n'. This results in CCExtender inserting multiple lines in the place a single value. For our example, the Dockerfile would now look like:
 
-```Makefile
+Dockerfile
+```Dockerfile
 ...
-PROJECT_PATH := $(subst $(GOPATH)/src/,,$(DIR))
+COPY . somefolder/
 
-# Variables required for building and deploying internal Atlassian
-# Docker images and Micros services
-ENVIRON := dev
-APP_IMAGE_NAME := sec-$(shell basename $(DIR))
-BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input
-BENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output
-IMAGE_PATH := /atlassian/asecurityteam
-ifeq ($(ENVIRON),prod)
-IMAGE_PATH := /sox/asecurityteam
-endif
+RUN pip install cookiecutter
+RUN pip install setuptools
+RUN pip install oyaml
+RUN pip install pylint
+
+RUN apt-get blahblahblah
 ...
 ```
 
-Locations:
+<a id="markdown-helloworld" name="helloworld"></a>
+## Hello World
 
-The locations block points to where your templates live. This can be paths to file locations or online repository locations.
+#### 1. Create practice templates
+
+###### Create template directories:
+
+```bash
+mkdir templates
+cd templates
+
+mkdir -p template-project-info/{{cookiecutter.project_name}}
+mkdir -p template-hello/{{cookiecutter.project_name}}
+mkdir -p template-goodbye/{{cookiecutter.project_name}}
+mkdir -p template-standards/{{cookiecutter.project_name}}
+```
+
+###### Create README template:
+
+In the template-project-info/ directory, add file cookiecutter.json with the following contents:
+
+```json
+{
+"project_name": "HelloWorld",
+"owner": "New User",
+"contact_email": "you@default.com"
+}
+```
+
+Then move into the lower directory:
+
+```bash
+cd {{cookiecutter.project_name}}
+```
+
+Add file README.txt with the following contents:
+
+```text
+{{cookiecutter.project_name}} Project Documentation
+
+This project was created by:
+{{cookiecutter.owner}}
+
+For questions about this project, please email {{cookiecutter.contact_email}}.
+```
+
+###### Create Hello World template:
+
+In the template-hello directory, add file cookiecutter.json with the following contents:
+
+```json
+{
+    "project_name": "HelloWorld",
+    "contact_email": "you@default.com",
+    "owner": "New User",
+    "greeting": "Hello"
+}
+```
+
+Then move into the lower directory:
+
+```bash
+cd {{cookiecutter.project_name}}
+```
+
+Add file hello.py with the following contents:
+
+```python
+print("{{cookiecutter.owner}} would like to say {{cookiecutter.greeting}}")
+```
+
+###### Create Goodbye template:
+
+In the template-goodbye directory, add a file cookiecutter.json with the following content:
+
+```json
+{
+    "project_name": "HelloWorld",
+    "contact_email": "you@default.com",
+    "owner": "New User",
+    "greeting": "Goodbye"
+}
+```
+
+Then move into the lower directory:
+
+```bash
+cd {{cookiecutter.project_name}}
+```
+
+Add file hello.py with the following contents:
+
+```python
+print("{{cookiecutter.owner}} would like to say {{cookiecutter.greeting}}")
+```
+
+###### Create Standards Template:
+
+In the template-standards directory, add file cookiecutter.json with the following contents:
+
+```json
+{
+"project_name": "HelloWorld",
+"owner": "New User",
+"contact_email": "you@default.com"
+}
+```
+
+#### 2. Create your configuration file:
+
+In your templates folder, create a file ccextender.yaml with the following content:
 
 ```yaml
+CCX_Version: 1.1
+standard-context:
+  project_name: "HelloWorld"
+  owner: "New User"
+  contact_email: "you@default.com"
+decisions:
+  readme:
+    query:
+      prompt: "Would you like to [1] add project readme info?"
+    yes:
+      - project-info
+  greeting:
+    query:
+      prompt: "Would you like to say [1] hello or [2] goodbye?"
+      include-if:
+        - yes
+    hello:
+      - hello-pack
+    goodbye:
+      - goodbye-pack
+change-packs:
+  hello-pack:
+    template-hello:
+      greeting: "Howdy"
+  goodbye-pack:
+    template-goodbye:
+  project-info:
+    template-project-info:
 locations:
   home:
-    - /go/src/ccextender/pkg/ccextender/configs/
-  gh-home:
-    - gh:asecurityteam/
-  template-makefile:
+    - <path to your templates folder>
+  template-hello:
     - $!home$
-    - template-makefile/
-  template-gateway:
+    - template-hello
+  template-goodbye:
     - $!home$
-    - template-gateway/
-  template-micros:
-    - $!gh-home$
-    - template-go-travis
-  template-benthos:
-    - /go/src/ccextender/pkg/ccextender/configs/template-benthos/
+    - template-goodbye
+  template-project-info:
+    - $!home$
+    - template-project-info
   template-standards:
     - $!home$
-    - template-standards/
+    - template-standards
 ```
 
-The locations section is pretty straightforward. All template directory tags need to start with "template-", otherwise it will be treated as a path alias like "home" and "gh-home".
+#### 3. Run CCExtender
 
-Each template must point to a cookiecutter directory containing a cookiecutter.json file.
+Now, navigate to the directory where you saved ccextender.yaml and then type:
+
+```bash
+ccextender
+```
+
+Answer the prompts. Once you are finished, you should see a new repository has been created in your current directory. Navigate into the repo and the run:
+
+```bash
+python hello.py
+```
+
+You should see that your changes have been implemented. Try running the program a few times, and you’ll see how the build changes.
+
+<a id="markdown-commonissues" name="commonissues"></a>
+## Common Issues
+
+###### CCExtender can't find a cookiecutter.json for a template
+
+So this either means that the path or url pointing to your template is broken or that one of your cookiecutter templates are missing the cookiecutter.json file. Verify that you have a cookiecutter.json in all template directories, including your standard template, and then verify that your links/paths work by manually calling them with:
+
+```bash
+cookiecutter <path or link to your cookiecutter template>
+```
+
+<a id="markdown-extendingccextender" name="extendingccextender"></a>
+## Extending ccextender
+
+#### Adding new logic flags
+
+So as of writing this, CCExtender only has two logical flags: include-if and exclude-if. But there is no limit on how many new flags can be added nor what they can do. To add a new flag, navigate to ccextender.py in pkg/ccextender and look at the class function prompt_user_decision. You should see a comment indicating the logic flag section. Right now, it looks something like this:
+
+```Python
+#Include-if flag logic
+if "include-if" in query_block.keys():
+      for condition in query_block["include-if"]:
+          if condition not in self.past_decisions:
+              print(str(condition) + " NOT in " + str(self.past_decisions))
+              return list()
+#Exclude-if flag logic
+if "exclude-if" in query_block.keys():
+    for condition in query_block["exclude-if"]:
+        if condition in self.past_decisions:
+            print(str(condition) + " in " + str(self.past_decisions))
+            return list()
+```
+
+The only standard part your new code will need is the following:
+
+```Python
+#My-new-flag flag logic
+if "my-new-flag" in query_block.keys():
+    #Your flag's code here
+```
+
+For instance, let's say we want to let users configure the color of the user prompt:
+
+```Python
+#Color flag logic
+if "color" in query_block.keys():
+    color_choice = query_block[color]
+    if color_choice == "blue":
+        prompt_string = '\033[94m' + prompt_string + '\033[0m'
+    else if color_choice == "green":
+        prompt_string = '\033[92m' + prompt_string + '\033[0m'
+```
+
+And then we'd just add the following line to any decision block we'd like to color:
+
+```YAML
+decisions:
+  readme:
+    query:
+      prompt: "Would you like to [1] add project readme info?"
+      color: green
+    yes:
+      - project-info
+  greeting:
+    query:
+      prompt: "Would you like to say [1] hello or [2] goodbye?"
+      include-if:
+        - yes
+      color: blue
+    hello:
+      - hello-pack
+    goodbye:
+      - goodbye-pack
+```

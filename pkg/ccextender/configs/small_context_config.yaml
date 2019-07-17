@@ -1,6 +1,10 @@
 CCX_Version: 1.0
 standard-context:
-  - project_name
+  project_name: "My SecDev OSS Project"
+  project_slug: "my-secdev-oss-project"
+  project_description: "A new SecDev project created with CCExtender"
+  project_namespace: "asecurityteam"
+  notification_email: "aslape@atlassian.com"
 decisions:
   gateway:
     query:

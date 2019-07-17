@@ -1,3 +1,7 @@
+[MASTER]
+
+ignore=ccextender
+
 [MESSAGES CONTROL]
 
 disable=

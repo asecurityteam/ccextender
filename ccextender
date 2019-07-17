@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+CONFIG=ccextender.yaml
+OUTDIR=.
+STD_TEMPLATE=template-standards
+
+while getopts c:o:s: option
+do
+case "${option}"
+in
+c) CONFIG=${OPTARG};;
+o) OUTDIR=${OPTARG};;
+s) STD_TEMPLATE=${OPTARG};;
+esac
+done
+
+python3 -m pkg.ccextender.ccextender -c ${CONFIG} -o ${OUTDIR} -s ${STD_TEMPLATE}

@@ -1,0 +1,9 @@
+.pycoverage
+.pytest_cache
+.vscode
+.build
+*.pyc
+pkg/ccextender/__pycache__
+*.log
+*.bak
+*.egg-info
