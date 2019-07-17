@@ -18,23 +18,27 @@ class CCExtender:
                  test_mode=None, outdir="."):
         '''Output: A templatized repository'''
 
+        # Test mode forces CCExtender not to read stdin, instead only using
+        # default values for template variables
         if test_mode is not None:
             self.test_mode = True
             print("Test mode is on")
 
         output = dict()
 
-        #config is a dictionary of ccextender.yaml (or whatever config file is used)
+        # config is a dictionary of ccextender.yaml (or whatever config file is used)
         config = self.load_config_yaml(ccx_config)
-        #templates is a dictionary pairing template names with their paths (or links)
+        # templates is a dictionary pairing template names with their paths (or links)
         templates = self.get_templates(config)
-        #defaults is a dictionary of default variable values, categorized by template
+        # defaults is a dictionary of default variable values, categorized by template
         defaults = self.get_defaults(std_template, config)
-        #standards is a dictionary of standard values that exist in all our repositories
-        #Essentially, these values will be reused for each template involved in the build
+        # standards is a dictionary of standard values that exist in all our repositories
+        # Essentially, these values will be reused for each template involved in the build
         standards = self.get_standards(config, defaults, std_template)
         output.update(self.get_decisions(config))
 
+        # After getting all of our changes, we run through each cookiecutter template and write
+        # its contents into the target directory
         for template in output:
             bundled = output[template].copy()
             bundled.update(standards)
@@ -43,6 +47,7 @@ class CCExtender:
 
     def get_standards(self, config, defaults, standard_model_template):
         '''
+        Prompts user to set values for the variables in our standards template
         Output:
             standard-context:
             {
@@ -62,6 +67,8 @@ class CCExtender:
 
     def get_decisions(self, config):
         '''
+        Reads through all the decision blocks in the config file, gets user input,
+        and then tracks change-packs that correspond to the user's choices.
         Output:
             template 1:
             {
@@ -84,6 +91,7 @@ class CCExtender:
 
     def get_defaults(self, std_template, config):
         '''
+        Grabs default values from our standards template
         Output:
             template 1:
             {
@@ -101,6 +109,8 @@ class CCExtender:
 
     def get_templates(self, config):
         '''
+        Constructs paths or url links to our templates so we can pull them during
+        repo construction
         Output:
             template1:
             {
@@ -126,23 +136,14 @@ class CCExtender:
 
     def get_changes(self, changepacks, config):
         '''
+        Takes changepack names that were selected by the user and assigns their changes to
+        their target templates in preparation for creating the new repo.
         Output
         template1:
             {
                 variable: value,
                 variable: value
             }
-        Change packs format
-        change pack 1:
-        {
-            template 1:
-            {
-                variable: value
-                variable: value
-            }
-            template 2:
-            ...
-        }
         '''
 
         changes = dict()
@@ -163,7 +164,7 @@ class CCExtender:
         return changes
 
     def load_config_yaml(self, ccx_config):
-        '''Loads in the configuration yaml as a dictionary'''
+        '''Loads in the configuration yaml as an ordered dictionary'''
         config_file = OrderedDict()
         if self.test_mode:
             config_file = open(ccx_config, 'r')
@@ -188,6 +189,8 @@ class CCExtender:
 
     def prompt_user_decision(self, decision_block, block_name, default):
         '''
+        Prompts a user to make a numeric choice corresponding to an option
+
         Output format: A list of change packs
         Decision Block format
         block name:
@@ -214,7 +217,7 @@ class CCExtender:
 
         prompt_string = query_block["prompt"]
 
-        #Logic Flags
+        ####Logic Flags
 
         if "include-if" in query_block.keys():
             for condition in query_block["include-if"]:
@@ -227,6 +230,7 @@ class CCExtender:
                     print(str(condition) + " in " + str(self.past_decisions))
                     return list()
 
+        ####
 
         print("\n[" + block_name + "]")
         print(prompt_string)

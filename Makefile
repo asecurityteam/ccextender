@@ -55,7 +55,7 @@ deploy: build
 	python3 -m twine upload dist/*
 
 clean:
-	rm -rf my-new-oss-service
+	rm -rf my-secdev-oss-project
 	rm -Rf .pycoverage/
 	rm -r dist/*
 	rm -rf build/

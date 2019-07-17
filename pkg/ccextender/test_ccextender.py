@@ -4,7 +4,6 @@
 import os
 import oyaml as yaml
 from pkg.ccextender.ccextender import CCExtender
-#from ccextender import CCExtender
 
 CONFIG_PATH = "pkg/ccextender/configs/typical_context_config.yaml"
 CONFIG_NORMAL = yaml.safe_load(open("pkg/ccextender/configs/typical_context_config.yaml", 'r'))
