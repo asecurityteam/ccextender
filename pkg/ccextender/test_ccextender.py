@@ -106,7 +106,7 @@ def test_get_decisions_large():
 
 def test_get_defaults():
     '''Testing get defaults method of ccextender class'''
-    test_ccx = CC_EXTENDER.get_defaults(CC_EXTENDER.get_templates(CONFIG_NORMAL))
+    test_ccx = CC_EXTENDER.get_defaults(STANDARD_TEMPLATE, CONFIG_NORMAL)
     assert test_ccx["template-makefile"]["project_namespace"] == "asecurityteam"
 
 def test_get_templates():
@@ -145,8 +145,8 @@ def test_black_box():
     '''Tests the ccextender application as a whole'''
     os.system("python3 -m pkg.ccextender.ccextender -c " + CONFIG_PATH + " -s " + STANDARD_TEMPLATE
               + " -t " + "True" + " -o " + ".")
-    assert(os.path.isdir('my-new-oss-library')
-           and os.path.isfile('my-new-oss-library/sec-my-new-oss-library.sd.yml'))
+    assert(os.path.isdir('my-secdev-oss-project')
+           and os.path.isfile('my-secdev-oss-project/sec-my-secdev-oss-project.sd.yml'))
 
 def test_clean_up():
     '''Removes leftover repository from black box test'''
