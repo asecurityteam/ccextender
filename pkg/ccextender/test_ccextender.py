@@ -122,7 +122,7 @@ def test_get_changes():
 
 def test_load_config_yaml():
     '''Testing load config yaml method of ccextender class'''
-    test_ccx = CC_EXTENDER.load_config_yaml(CONFIG_PATH, "/go/src/mirror/")
+    test_ccx = CC_EXTENDER.load_config_yaml(CONFIG_PATH)
     assert float(test_ccx["CCX_Version"]) > 0.9
 
 def test_prompt_user_input():

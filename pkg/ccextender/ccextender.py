@@ -16,7 +16,7 @@ class CCExtender:
     past_decisions = list()
 
     def __init__(self, ccx_config="ccextender.yaml", std_template="template-standards",
-                 test_mode=None, outdir="/go/src/mirror/"):
+                 test_mode=None, outdir="."):
         '''Output: A templatized repository'''
 
         if test_mode is not None:
@@ -26,11 +26,11 @@ class CCExtender:
         output = dict()
 
         #config is a dictionary of ccextender.yaml (or whatever config file is used)
-        config = self.load_config_yaml(ccx_config, outdir)
+        config = self.load_config_yaml(ccx_config)
         #templates is a dictionary pairing template names with their paths (or links)
         templates = self.get_templates(config)
         #defaults is a dictionary of default variable values, categorized by template
-        defaults = self.get_defaults(templates)
+        defaults = self.get_defaults(std_template, config)
         #standards is a dictionary of standard values that exist in all our repositories
         #Essentially, these values will be reused for each template involved in the build
         standards = self.get_standards(config, defaults, std_template)
@@ -39,7 +39,6 @@ class CCExtender:
         for template in output:
             bundled = output[template].copy()
             bundled.update(standards)
-
             cookiecutter(templates[template], no_input=True, extra_context=bundled,
                          overwrite_if_exists=True, output_dir=outdir)
 
@@ -84,7 +83,7 @@ class CCExtender:
 
         return changes
 
-    def get_defaults(self, templates):
+    def get_defaults(self, std_template, config):
         '''
         Output:
             template 1:
@@ -94,11 +93,14 @@ class CCExtender:
         '''
 
         defaults = dict()
+        defaults[std_template] = dict()
+        # for template in templates:
+        #     if "template" in template:
+        #         defaults[template] = generate.generate_context(templates[template] +
+        #                                                        "cookiecutter.json")["cookiecutter"]
 
-        for template in templates:
-            if "template" in template:
-                defaults[template] = generate.generate_context(templates[template] +
-                                                               "cookiecutter.json")["cookiecutter"]
+        for variable in config["standard-context"]:
+            defaults[std_template][variable] = config["standard-context"][variable]
 
         return defaults
 
@@ -165,13 +167,13 @@ class CCExtender:
 
         return changes
 
-    def load_config_yaml(self, ccx_config, shared_volume):
+    def load_config_yaml(self, ccx_config):
         '''Loads in the configuration yaml as a dictionary'''
         config_file = OrderedDict()
         if self.test_mode:
             config_file = open(ccx_config, 'r')
         else:
-            config_file = open(shared_volume + ccx_config, 'r')
+            config_file = open(ccx_config, 'r')
         return yaml.safe_load(config_file)
 
     def prompt_user_input(self, variable, default):
@@ -217,11 +219,13 @@ class CCExtender:
 
         prompt_string = query_block["prompt"]
 
-        i = 0
-        for choice in decision_block:
-            if choice != "query":
-                prompt_string.replace("%" + str(i), "[" + str(i) + "] " + choice)
-            i += 1
+        # i = 0
+        # for choice in decision_block:
+        #     if choice != "query":
+        #         prompt_string.replace("%" + str(i), "[" + str(i) + "] " + choice)
+        #     i += 1
+
+        #Logic Flags
 
         if "include-if" in query_block.keys():
             for condition in query_block["include-if"]:

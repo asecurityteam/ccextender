@@ -1,0 +1,4 @@
+.pycoverage
+.pytest_cache
+.vscode
+.build

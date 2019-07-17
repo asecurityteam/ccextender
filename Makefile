@@ -46,21 +46,18 @@ doc: ;
 docker-login: ;
 
 build:
-	docker build -t $(ARTIFACT):$(VERSION) .
+	python3 setup.py bdist_wheel
 
 run:
-	docker run -v $(DIR):/go/src/$(DIR) -ti $(ARTIFACT):$(VERSION)
+	python3 -m pkg.ccextender.ccextender
 
 deploy: build
-	docker login -u=$(REGISTRY_USER) $(REGISTRY)
-	docker push $(ARTIFACT):$(VERSION)
-	docker tag $(ARTIFACT):$(VERSION) $(ARTIFACT):latest
-	docker push $(ARTIFACT):latest
+	python3 -m twine upload dist/*
 
 clean:
 	rm -rf my-new-oss-service
-	rm -f CCExtender/*.pyc
-	rm -f tests/*.pyc
 	rm -Rf .pycoverage/
+	rm -r dist/*
+	rm -rf build/
 
 
