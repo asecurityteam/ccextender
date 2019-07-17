@@ -4,7 +4,6 @@ system.'''
 
 from collections import OrderedDict
 import argparse
-# from cookiecutter import generate
 from cookiecutter.main import cookiecutter
 import oyaml as yaml
 
@@ -94,11 +93,6 @@ class CCExtender:
 
         defaults = dict()
         defaults[std_template] = dict()
-        # for template in templates:
-        #     if "template" in template:
-        #         defaults[template] = generate.generate_context(templates[template] +
-        #                                                        "cookiecutter.json")
-        # ["cookiecutter"]
 
         for variable in config["standard-context"]:
             defaults[std_template][variable] = config["standard-context"][variable]
@@ -219,12 +213,6 @@ class CCExtender:
         query_block = decision_block["query"]
 
         prompt_string = query_block["prompt"]
-
-        # i = 0
-        # for choice in decision_block:
-        #     if choice != "query":
-        #         prompt_string.replace("%" + str(i), "[" + str(i) + "] " + choice)
-        #     i += 1
 
         #Logic Flags
 
