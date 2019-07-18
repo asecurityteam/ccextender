@@ -57,6 +57,7 @@ class CCExtender:
 
         standards = dict()
 
+        # Prompts the user for input for each standard variable in the standard-context block
         for variable in config["standard-context"]:
             if variable in defaults[standard_model_template].keys():
                 standards[variable] = \
@@ -91,7 +92,7 @@ class CCExtender:
 
     def get_defaults(self, std_template, config):
         '''
-        Grabs default values from our standards template
+        Grabs default values from our standard-context in our config
         Output:
             template 1:
             {
@@ -120,11 +121,13 @@ class CCExtender:
 
         templates = dict()
 
+        # Turns the list of path sections for each template into a full path
         for template in config["locations"]:
             templates[template] = ""
             for path in config["locations"][template]:
                 templates[template] += path
 
+        # Searches for shortcuts like $!home$ and replaces them with their corresponding path
         for template in templates:
             path = templates[template]
             segmented = path.split("$")
@@ -166,20 +169,21 @@ class CCExtender:
     def load_config_yaml(self, ccx_config):
         '''Loads in the configuration yaml as an ordered dictionary'''
         config_file = OrderedDict()
-        if self.test_mode:
-            config_file = open(ccx_config, 'r')
-        else:
-            config_file = open(ccx_config, 'r')
+        config_file = open(ccx_config, 'r')
         return yaml.safe_load(config_file)
 
     def prompt_user_input(self, variable, default):
         '''Prompts a user for input via stdin'''
+
+        #### User Interface ####
 
         print("[return] for default: [" + default + "]")
         if self.test_mode:
             response = default
         else:
             response = input("[" + variable + "]: ")
+
+        ####
 
         if response == "":
             return default
@@ -217,7 +221,7 @@ class CCExtender:
 
         prompt_string = query_block["prompt"]
 
-        ####Logic Flags
+        #### Logic Flags ####
 
         if "include-if" in query_block.keys():
             for condition in query_block["include-if"]:
@@ -232,6 +236,8 @@ class CCExtender:
 
         ####
 
+        #### User Interface ####
+
         print("\n[" + block_name + "]")
         print(prompt_string)
         print("[return] for default: [" + str(default) + "]")
@@ -240,7 +246,12 @@ class CCExtender:
         else:
             decision = self.interpret_decision(input("[0] to skip: "), decision_block, default)
 
+        ####
+
         response = []
+
+        # Grabs change-packs listed under user's decision and adds them to a list for repo
+        # construction
 
         if decision != "query":
             self.past_decisions.append(decision)
