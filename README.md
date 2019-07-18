@@ -1,7 +1,7 @@
 <a id="markdown-CCExtender" name="CCExtender"></a>
 # CCExtender -- Cookiecutter with branching builds
 
-(Public github link to be added soon)
+https://github.com/asecurityteam/ccextender
 
 <!-- TOC -->
 
