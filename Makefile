@@ -20,18 +20,19 @@ dep:
 	docker run -ti \
         --mount src="$(DIR)",target="/go/src/$(PROJECT_PATH)",type="bind" \
         -w "/go/src/$(PROJECT_PATH)" \
-        registry.hub.docker.com/asecurityteam/sdcli:v2 python dep
+        registry.hub.docker.com/asecurityteam/sdcli:v1 python dep
+
 lint:
 	docker run -ti \
         --mount src="$(DIR)",target="/go/src/$(PROJECT_PATH)",type="bind" \
         -w "/go/src/$(PROJECT_PATH)" \
-        registry.hub.docker.com/asecurityteam/sdcli:v2 python lint
+        registry.hub.docker.com/asecurityteam/sdcli:v1 python lint
 
 test:
 	docker run -ti \
         --mount src="$(DIR)",target="/go/src/$(PROJECT_PATH)",type="bind" \
         -w "/go/src/$(PROJECT_PATH)" \
-        registry.hub.docker.com/asecurityteam/sdcli:v2 python test
+        registry.hub.docker.com/asecurityteam/sdcli:v1 python test
 
 integration: ;
 
@@ -39,7 +40,7 @@ coverage:
 	docker run -ti \
         --mount src="$(DIR)",target="/go/src/$(PROJECT_PATH)",type="bind" \
         -w "/go/src/$(PROJECT_PATH)" \
-        registry.hub.docker.com/asecurityteam/sdcli:v2 python coverage
+        registry.hub.docker.com/asecurityteam/sdcli:v1 python coverage
 
 doc: ;
 
