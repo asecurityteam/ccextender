@@ -57,7 +57,6 @@ deploy: build
 clean:
 	rm -rf my-secdev-oss-project
 	rm -Rf .pycoverage/
+	rm -rf pkg/ccextender/__pycache__
 	rm -r dist/*
 	rm -rf build/
-
-
