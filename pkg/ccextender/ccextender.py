@@ -263,7 +263,6 @@ class CCExtender:
 
         #### User Interface ####
 
-        # print("\n%s[%s]%s" % (bcolors.OKGREEN, block_name, bcolors.ENDC))
         print("\n%s%s%s" % (bcolors.OKBLUE, prompt_string , bcolors.ENDC))
         print("[0] to skip")
         if self.test_mode:
