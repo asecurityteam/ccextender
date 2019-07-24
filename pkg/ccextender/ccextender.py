@@ -14,7 +14,7 @@ REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
 class bcolors:
     '''A strucut for commonly used terminal colors'''
     HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
+    OKBLUE = '\033[96m'
     OKGREEN = '\033[92m'
     WARNING = '\033[93m'
     FAIL = '\033[91m'
@@ -41,6 +41,8 @@ class CCExtender:
             self.test_mode = True
             print("%sTest mode is on%s" % (bcolors.WARNING, bcolors.ENDC))
 
+        print("\n%sInteractive Build -- CCExtender%s\n" % (bcolors.WARNING, bcolors.ENDC))
+
         output = dict()
 
         # config is a dictionary of ccextender.yaml (or whatever config file is used)
@@ -51,6 +53,7 @@ class CCExtender:
         defaults = self.get_defaults(std_template, config)
         # standards is a dictionary of standard values that exist in all our repositories
         # Essentially, these values will be reused for each template involved in the build
+        print("%sProject Details%s\n" % (bcolors.OKBLUE, bcolors.ENDC))
         standards = self.get_standards(config, defaults, std_template)
         output.update(self.get_decisions(config))
 
@@ -61,6 +64,8 @@ class CCExtender:
             bundled.update(standards)
             cookiecutter(templates[template], no_input=True, extra_context=bundled,
                          overwrite_if_exists=True, output_dir=outdir)
+        print("--------------------")
+        print("%sSuccessfully built new repository: %s%s" % (bcolors.OKGREEN, standards["project_slug"], bcolors.ENDC))
 
     def get_standards(self, config, defaults, standard_model_template):
         '''
@@ -195,12 +200,14 @@ class CCExtender:
 
         #### User Interface ####
 
+        print("%s%s%s" % (bcolors.OKBLUE, variable.capitalize().replace("_", " "), bcolors.ENDC))
         print("[return] for default: [" + default + "]")
         if self.test_mode:
             response = default
         else:
-            response = input("[" + variable + "]: ")
+            response = input("[%s%s%s]: " % (bcolors.VIOLET, variable, bcolors.ENDC))
 
+        print()
         ####
 
         if response == "":
@@ -256,13 +263,13 @@ class CCExtender:
 
         #### User Interface ####
 
-        print("\n%s[%s]%s" % (bcolors.OKGREEN, block_name, bcolors.ENDC))
-        print(prompt_string)
+        # print("\n%s[%s]%s" % (bcolors.OKGREEN, block_name, bcolors.ENDC))
+        print("\n%s%s%s" % (bcolors.OKBLUE, prompt_string , bcolors.ENDC))
         print("[0] to skip")
         if self.test_mode:
             decision = self.interpret_decision(default, decision_block, default)
         else:
-            decision = self.interpret_decision(input("[return] for default [" + str(default) + "]:"), decision_block, default)
+            decision = self.interpret_decision(input("[return] for default [%s%s%s]:" % (bcolors.VIOLET, str(default), bcolors.ENDC)), decision_block, default)
 
         ####
 

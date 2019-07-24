@@ -3,6 +3,8 @@ standard-context:
   project_name: "New Project"
   project_slug: "new-project"
   project_namespace: "asecurityteam"
+  project_description: "Description"
+  notification_email: "security-engineering@atlassian.com"
 decisions:
   language:
     query:
@@ -84,9 +86,9 @@ change-packs:
     # Currently nothing needed here
   python-open-library:
     # Currently nothing needed here
-  golang-private-libary:
+  golang-private-library:
     template-go-private-library:
-  python-private-libary:
+  python-private-library:
     # Currently nothing needed here
   python-open-service:
     template-makefile:
