@@ -273,17 +273,17 @@ class CCExtender:
 
         return decision
 
-# class bcolors:
-#     '''A strucut for commonly used terminal colors'''
-#     HEADER = '\033[95m'
-#     OKBLUE = '\033[94m'
-#     OKGREEN = '\033[92m'
-#     WARNING = '\033[93m'
-#     FAIL = '\033[91m'
-#     ENDC = '\033[0m'
-#     BOLD = '\033[1m'
-#     UNDERLINE = '\033[4m'
-#     VIOLET = '\033[35m'
+class bcolors:
+    '''A strucut for commonly used terminal colors'''
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    VIOLET = '\033[35m'
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser()
