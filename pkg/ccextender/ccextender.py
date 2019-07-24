@@ -4,14 +4,15 @@ system.'''
 
 from collections import OrderedDict
 import argparse
+import os
 from cookiecutter.main import cookiecutter
 import oyaml as yaml
-import os
 
 PACKAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
 
-class bcolors:
+#pylint: disable=too-few-public-methods
+class Bcolors:
     '''A strucut for commonly used terminal colors'''
     HEADER = '\033[95m'
     OKBLUE = '\033[96m'
@@ -39,9 +40,9 @@ class CCExtender:
         # default values for template variables
         if test_mode is not None:
             self.test_mode = True
-            print("%sTest mode is on%s" % (bcolors.WARNING, bcolors.ENDC))
+            print("%sTest mode is on%s" % (Bcolors.WARNING, Bcolors.ENDC))
 
-        print("\n%sInteractive Build -- CCExtender%s\n" % (bcolors.WARNING, bcolors.ENDC))
+        print("\n%sInteractive Build -- CCExtender%s\n" % (Bcolors.WARNING, Bcolors.ENDC))
 
         output = dict()
 
@@ -53,7 +54,7 @@ class CCExtender:
         defaults = self.get_defaults(std_template, config)
         # standards is a dictionary of standard values that exist in all our repositories
         # Essentially, these values will be reused for each template involved in the build
-        print("%sProject Details%s\n" % (bcolors.OKBLUE, bcolors.ENDC))
+        print("%sProject Details%s\n" % (Bcolors.OKBLUE, Bcolors.ENDC))
         standards = self.get_standards(config, defaults, std_template)
         output.update(self.get_decisions(config))
 
@@ -65,7 +66,9 @@ class CCExtender:
             cookiecutter(templates[template], no_input=True, extra_context=bundled,
                          overwrite_if_exists=True, output_dir=outdir)
         print("--------------------")
-        print("%sSuccessfully built new repository: %s%s" % (bcolors.OKGREEN, standards["project_slug"], bcolors.ENDC))
+        print("%sSuccessfully built new repository: %s%s" % (Bcolors.OKGREEN,
+                                                             standards["project_slug"],
+                                                             Bcolors.ENDC))
 
     def get_standards(self, config, defaults, standard_model_template):
         '''
@@ -102,8 +105,7 @@ class CCExtender:
         changepacks = list()
 
         for decision_block in config["decisions"]:
-            change_list = self.prompt_user_decision(config["decisions"][decision_block],
-                                                    decision_block, "1")
+            change_list = self.prompt_user_decision(config["decisions"][decision_block], "1")
 
             for changepack in change_list:
                 changepacks.append(changepack)
@@ -172,6 +174,7 @@ class CCExtender:
         '''
 
         changes = dict()
+        #pylint: disable=too-many-nested-blocks
         for pack in changepacks:
             if config["change-packs"][pack] is not None:
                 for template in config["change-packs"][pack]:
@@ -200,12 +203,12 @@ class CCExtender:
 
         #### User Interface ####
 
-        print("%s%s%s" % (bcolors.OKBLUE, variable.capitalize().replace("_", " "), bcolors.ENDC))
+        print("%s%s%s" % (Bcolors.OKBLUE, variable.capitalize().replace("_", " "), Bcolors.ENDC))
         print("[return] for default: [" + default + "]")
         if self.test_mode:
             response = default
         else:
-            response = input("[%s%s%s]: " % (bcolors.VIOLET, variable, bcolors.ENDC))
+            response = input("[%s%s%s]: " % (Bcolors.VIOLET, variable, Bcolors.ENDC))
 
         print()
         ####
@@ -216,7 +219,7 @@ class CCExtender:
             return response
 
 
-    def prompt_user_decision(self, decision_block, block_name, default):
+    def prompt_user_decision(self, decision_block, default):
         '''
         Prompts a user to make a numeric choice corresponding to an option
 
@@ -263,12 +266,17 @@ class CCExtender:
 
         #### User Interface ####
 
-        print("\n%s%s%s" % (bcolors.OKBLUE, prompt_string , bcolors.ENDC))
+        print("\n%s%s%s" % (Bcolors.OKBLUE, prompt_string, Bcolors.ENDC))
         print("[0] to skip")
         if self.test_mode:
             decision = self.interpret_decision(default, decision_block, default)
         else:
-            decision = self.interpret_decision(input("[return] for default [%s%s%s]:" % (bcolors.VIOLET, str(default), bcolors.ENDC)), decision_block, default)
+            decision = self.interpret_decision(input("[return] for default [%s%s%s]:" \
+                                                                                % (Bcolors.VIOLET,
+                                                                                   str(default),
+                                                                                   Bcolors.ENDC)),
+                                               decision_block,
+                                               default)
 
         ####
 
