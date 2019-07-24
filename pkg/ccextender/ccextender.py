@@ -7,6 +7,9 @@ import argparse
 from cookiecutter.main import cookiecutter
 import oyaml as yaml
 
+PACKAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
+
 class CCExtender:
     '''CCExtender reads in a configuration file (ccx_config) for its build information, and then
     prompts the user for decisions about how they wish the build to proceed.'''
@@ -14,7 +17,7 @@ class CCExtender:
     test_mode = False
     past_decisions = list()
 
-    def __init__(self, ccx_config="ccextender.yaml", std_template="template-standards",
+    def __init__(self, ccx_config=REQ_FILE, std_template="template-standards",
                  test_mode=None, outdir="."):
         '''Output: A templatized repository'''
 
