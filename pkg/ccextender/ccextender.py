@@ -6,6 +6,7 @@ from collections import OrderedDict
 import argparse
 from cookiecutter.main import cookiecutter
 import oyaml as yaml
+import os
 
 PACKAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
