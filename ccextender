@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 
-CONFIG=ccextender.yaml
 OUTDIR=.
 STD_TEMPLATE=template-standards
 
@@ -14,4 +13,4 @@ s) STD_TEMPLATE=${OPTARG};;
 esac
 done
 
-python3 -m pkg.ccextender.ccextender -c ${CONFIG} -o ${OUTDIR} -s ${STD_TEMPLATE}
+python3 -m pkg.ccextender.ccextender -o ${OUTDIR} -s ${STD_TEMPLATE}

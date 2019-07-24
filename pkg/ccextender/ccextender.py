@@ -11,6 +11,19 @@ import os
 PACKAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
 
+class bcolors:
+    '''A strucut for commonly used terminal colors'''
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+    VIOLET = '\033[35m'
+
+
 class CCExtender:
     '''CCExtender reads in a configuration file (ccx_config) for its build information, and then
     prompts the user for decisions about how they wish the build to proceed.'''
@@ -243,7 +256,7 @@ class CCExtender:
 
         #### User Interface ####
 
-        print("\n%s[%s]%s" % (bcolors.OKBLUE, block_name, bcolors.ENDC))
+        print("\n%s[%s]%s" % (bcolors.OKGREEN, block_name, bcolors.ENDC))
         print(prompt_string)
         print("[0] to skip")
         if self.test_mode:
@@ -276,6 +289,7 @@ class CCExtender:
             i += 1
 
         return decision
+
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser()
