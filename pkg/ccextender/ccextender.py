@@ -1,7 +1,7 @@
 '''A module building off of the cookiecutter templating application to create logical builds with
 branching options and the ability to compose many different templates into one repository building
 system.'''
-
+#!/usr/bin/env python3
 from collections import OrderedDict
 import argparse
 from cookiecutter.main import cookiecutter
@@ -22,7 +22,7 @@ class CCExtender:
         # default values for template variables
         if test_mode is not None:
             self.test_mode = True
-            print("Test mode is on")
+            print("%sTest mode is on%s" % (bcolors.WARNING, bcolors.ENDC))
 
         output = dict()
 
@@ -151,18 +151,19 @@ class CCExtender:
 
         changes = dict()
         for pack in changepacks:
-            for template in config["change-packs"][pack]:
-                if template not in changes.keys():
-                    changes[template] = dict()
-                if config["change-packs"][pack][template] is not None:
-                    for variable in config["change-packs"][pack][template]:
-                        if variable in changes[template].keys():
-                            value = config["change-packs"][pack][template][variable]
-                            changes[template][variable] += value + "\n"
-                        else:
-                            changes[template][variable] = ""
-                            value = config["change-packs"][pack][template][variable]
-                            changes[template][variable] += value + "\n"
+            if config["change-packs"][pack] is not None:
+                for template in config["change-packs"][pack]:
+                    if template not in changes.keys():
+                        changes[template] = dict()
+                    if config["change-packs"][pack][template] is not None:
+                        for variable in config["change-packs"][pack][template]:
+                            if variable in changes[template].keys():
+                                value = config["change-packs"][pack][template][variable]
+                                changes[template][variable] += value + "\n"
+                            else:
+                                changes[template][variable] = ""
+                                value = config["change-packs"][pack][template][variable]
+                                changes[template][variable] += value + "\n"
 
         return changes
 
@@ -226,25 +227,25 @@ class CCExtender:
         if "include-if" in query_block.keys():
             for condition in query_block["include-if"]:
                 if condition not in self.past_decisions:
-                    print(str(condition) + " NOT in " + str(self.past_decisions))
+                    # print(str(condition) + " NOT in " + str(self.past_decisions))
                     return list()
         if "exclude-if" in query_block.keys():
             for condition in query_block["exclude-if"]:
                 if condition in self.past_decisions:
-                    print(str(condition) + " in " + str(self.past_decisions))
+                    # print(str(condition) + " in " + str(self.past_decisions))
                     return list()
 
         ####
 
         #### User Interface ####
 
-        print("\n[" + block_name + "]")
+        print("\n%s[%s]%s" % (bcolors.OKBLUE, block_name, bcolors.ENDC))
         print(prompt_string)
-        print("[return] for default: [" + str(default) + "]")
+        print("[0] to skip")
         if self.test_mode:
             decision = self.interpret_decision(default, decision_block, default)
         else:
-            decision = self.interpret_decision(input("[0] to skip: "), decision_block, default)
+            decision = self.interpret_decision(input("[return] for default [" + str(default) + "]:"), decision_block, default)
 
         ####
 
@@ -271,6 +272,18 @@ class CCExtender:
             i += 1
 
         return decision
+
+# class bcolors:
+#     '''A strucut for commonly used terminal colors'''
+#     HEADER = '\033[95m'
+#     OKBLUE = '\033[94m'
+#     OKGREEN = '\033[92m'
+#     WARNING = '\033[93m'
+#     FAIL = '\033[91m'
+#     ENDC = '\033[0m'
+#     BOLD = '\033[1m'
+#     UNDERLINE = '\033[4m'
+#     VIOLET = '\033[35m'
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser()

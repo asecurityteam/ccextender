@@ -6,7 +6,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name='ccextender',
-    version='1.14',
+    version='1.23',
     scripts=['ccextender'],
     author="aslape",
     author_email="aslape@atlassian.com",
