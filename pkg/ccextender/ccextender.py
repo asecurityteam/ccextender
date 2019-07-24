@@ -1,7 +1,7 @@
 '''A module building off of the cookiecutter templating application to create logical builds with
 branching options and the ability to compose many different templates into one repository building
 system.'''
-#!/usr/bin/env python3
+
 from collections import OrderedDict
 import argparse
 from cookiecutter.main import cookiecutter
@@ -272,18 +272,6 @@ class CCExtender:
             i += 1
 
         return decision
-
-class bcolors:
-    '''A strucut for commonly used terminal colors'''
-    HEADER = '\033[95m'
-    OKBLUE = '\033[94m'
-    OKGREEN = '\033[92m'
-    WARNING = '\033[93m'
-    FAIL = '\033[91m'
-    ENDC = '\033[0m'
-    BOLD = '\033[1m'
-    UNDERLINE = '\033[4m'
-    VIOLET = '\033[35m'
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser()
