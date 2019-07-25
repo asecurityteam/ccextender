@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 
-OUTDIR=.
-STD_TEMPLATE=template-standards
+CONFIG=$1
+OUTDIR=$2
+STD_TEMPLATE=$3
 
 while getopts c:o:s: option
 do
@@ -13,4 +14,6 @@ s) STD_TEMPLATE=${OPTARG};;
 esac
 done
 
-python3 -m pkg.ccextender.ccextender -o ${OUTDIR} -s ${STD_TEMPLATE}
+
+
+python3 -m pkg.ccextender.ccextender
