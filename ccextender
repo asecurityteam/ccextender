@@ -1,19 +1,17 @@
 #!/usr/bin/env bash
 
-CONFIG=$1
-OUTDIR=$2
-STD_TEMPLATE=$3
+CONFIG="None"
+OUTDIR="None"
 
-while getopts c:o:s: option
+while getopts c:o: option
 do
 case "${option}"
 in
 c) CONFIG=${OPTARG};;
 o) OUTDIR=${OPTARG};;
-s) STD_TEMPLATE=${OPTARG};;
 esac
 done
 
 
 
-python3 -m pkg.ccextender.ccextender
+python3 -m pkg.ccextender.ccextender -c $CONFIG -o $OUTDIR

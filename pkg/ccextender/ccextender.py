@@ -321,7 +321,7 @@ if __name__ == "__main__":
     ARGDICT = dict()
 
     for arg in ARGS:
-        if ARGS[arg] is not None:
+        if ARGS[arg] is not None and ARGS[arg] is not "None":
             ARGDICT[arg] = ARGS[arg]
 
     CCExtender(**ARGDICT)
