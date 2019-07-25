@@ -132,7 +132,7 @@ def test_prompt_user_input():
 def test_prompt_user_decision():
     '''Testing prompt user decision method of ccextender class'''
     test_ccx = CC_EXTENDER.prompt_user_decision(CONFIG_NORMAL["decisions"]["benthos"],
-                                                "benthos", "1")
+                                                "1")
     assert test_ccx in (["benthos", "gateway"], ["gateway", "benthos"])
 
 def test_interpret_decision():
