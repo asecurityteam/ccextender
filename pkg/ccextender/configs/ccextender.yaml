@@ -255,7 +255,7 @@ locations:
   github:
     - https://github.com/asecurityteam/
   bitbucket:
-    - git+ssh://git@bitbucket.com/asecurityteam/
+    - git+ssh://git@bitbucket.org/asecurityteam/
   local-bb:
     - /Users/aslape/templates/bitbucket-new/
   local-gh:

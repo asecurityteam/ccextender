@@ -271,7 +271,7 @@ class CCExtender:
         if self.test_mode:
             decision = self.interpret_decision(default, decision_block, default)
         else:
-            decision = self.interpret_decision(input("[return] for default [%s%s%s]:" \
+            decision = self.interpret_decision(input("[return] for default [%s%s%s]: " \
                                                                                 % (Bcolors.VIOLET,
                                                                                    str(default),
                                                                                    Bcolors.ENDC)),
