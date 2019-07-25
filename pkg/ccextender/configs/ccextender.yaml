@@ -255,50 +255,50 @@ locations:
   github:
     - https://github.com/asecurityteam/
   bitbucket:
-    - https://bitbucket.com/asecurityteam/
+    - git+ssh://git@bitbucket.com/asecurityteam/
   local-bb:
     - /Users/aslape/templates/bitbucket-new/
   local-gh:
     - /Users/aslape/templates/github-new/
   template-docker:
-    - $!local-gh$
+    - $!github$
     - template-docker
   template-base:
-    - $!local-gh$
+    - $!github$
     - template-base
   template-go-base:
-    - $!local-gh$
+    - $!github$
     - template-go-base
   template-python-base:
-    - $!local-gh$
+    - $!github$
     - template-python-base
   template-makefile:
-    - $!local-bb$
+    - $!bitbucket$
     - template-makefile
   template-go-private-library:
-    - $!local-bb$
+    - $!bitbucket$
     - template-go-library
   template-python-open-service:
-    - $!local-gh$
+    - $!github$
     - template-python-service
   template-python-private-service:
-    - $!local-bb$
+    - $!bitbucket$
     - template-python-service
   template-go-open-service:
-    - $!local-gh$
+    - $!github$
     - template-go-service
   template-go-private-service:
-    - $!local-bb$
+    - $!bitbucket$
     - template-go-service
   template-inbound:
-    - $!local-bb$
+    - $!bitbucket$
     - template-inbound
   template-outbound:
-    - $!local-bb$
+    - $!bitbucket$
     - template-outbound
   template-micros:
-    - $!local-bb$
-    - template-micros
+    - $!bitbucket$
+    - template-micros-ccx
   template-streamer-manager:
-    - $!local-bb$
+    - $!bitbucket$
     - template-streamer-manager
