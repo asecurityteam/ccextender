@@ -253,9 +253,9 @@ change-packs:
       makefile_hack_deploy: "SM_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_SM) \\"
 locations:
   github:
-    - https://github.com/asecurityteam/
+    - /home/sdcli/oss-templates/
   bitbucket:
-    - git+ssh://git@bitbucket.org/asecurityteam/
+    - /home/sdcli/templates/
   local-bb:
     - /Users/aslape/templates/bitbucket-new/
   local-gh:
