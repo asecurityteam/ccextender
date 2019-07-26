@@ -204,11 +204,11 @@ class CCExtender:
         #### User Interface ####
 
         print("%s%s%s" % (Bcolors.OKBLUE, variable.capitalize().replace("_", " "), Bcolors.ENDC))
-        print("[return] for default: [" + default + "]")
+        print("[return] for default: [%s%s%s]" % (Bcolors.VIOLET, default, Bcolors.ENDC))
         if self.test_mode:
             response = default
         else:
-            response = input("[%s%s%s]: " % (Bcolors.VIOLET, variable, Bcolors.ENDC))
+            response = input("[%s%s%s]: " % (Bcolors.OKBLUE, variable, Bcolors.ENDC))
 
         print()
         ####
