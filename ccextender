@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 CONFIG="None"
-OUTDIR="None"
+OUTDIR="."
 
 while getopts c:o: option
 do
