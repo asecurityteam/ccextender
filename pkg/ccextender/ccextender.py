@@ -321,6 +321,7 @@ if __name__ == "__main__":
     ARGDICT = dict()
 
     for arg in ARGS:
+        #pylint: disable=literal-comparison
         if ARGS[arg] is not None and ARGS[arg] is not "None":
             ARGDICT[arg] = ARGS[arg]
 
