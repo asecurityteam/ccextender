@@ -5,10 +5,11 @@ import os
 import oyaml as yaml
 from pkg.ccextender.ccextender import CCExtender
 
-CONFIG_PATH = "pkg/ccextender/configs/typical_context_config.yaml"
-CONFIG_NORMAL = yaml.safe_load(open("pkg/ccextender/configs/typical_context_config.yaml", 'r'))
-CONFIG_LARGE = yaml.safe_load(open("pkg/ccextender/configs/large_context_config.yaml", 'r'))
-CONFIG_SMALL = yaml.safe_load(open("pkg/ccextender/configs/small_context_config.yaml", 'r'))
+
+CONFIG_PATH = "pkg/ccextender/tests/typical_context_config.yaml"
+CONFIG_NORMAL = yaml.safe_load(open("pkg/ccextender/tests/typical_context_config.yaml", 'r'))
+CONFIG_LARGE = yaml.safe_load(open("pkg/ccextender/tests/large_context_config.yaml", 'r'))
+CONFIG_SMALL = yaml.safe_load(open("pkg/ccextender/tests/small_context_config.yaml", 'r'))
 
 STANDARD_TEMPLATE = "template-makefile"
 
@@ -111,7 +112,7 @@ def test_get_defaults():
 def test_get_templates():
     '''Testing get templates method of ccextender class'''
     test_ccx = CC_EXTENDER.get_templates(CONFIG_NORMAL)
-    assert test_ccx["template-makefile"] == "pkg/ccextender/configs/template-makefile/"
+    assert test_ccx["template-makefile"] == "pkg/ccextender/tests/template-makefile/"
 
 def test_get_changes():
     '''Testing get changes method of ccextender class'''

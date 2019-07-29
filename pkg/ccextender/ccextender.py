@@ -1,7 +1,8 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.5
 '''A module building off of the cookiecutter templating application to create logical builds with
 branching options and the ability to compose many different templates into one repository building
 system.'''
+
 
 from collections import OrderedDict
 import argparse
@@ -24,7 +25,6 @@ class Bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     VIOLET = '\033[35m'
-
 
 class CCExtender:
     '''CCExtender reads in a configuration file (ccx_config) for its build information, and then

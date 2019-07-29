@@ -337,6 +337,8 @@ RUN apt-get blahblahblah
 ...
 ```
 
+Note: If more than one chosen changepack has a file of the same name, the last chosen file will overwrite the other, so you will need to be cognizant of that when writing your decision blocks.
+
 <a id="markdown-helloworld" name="helloworld"></a>
 ## Hello World
 

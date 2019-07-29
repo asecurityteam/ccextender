@@ -13,7 +13,7 @@ setuptools.setup(
     description="Cookiecutter Extended",
     long_description=LONG_DESCRIPTION,
     long_description_content_type="text/markdown",
-    url="https://github.com/aslape/ccextender",
+    url="https://github.com/asecurityteam/ccextender",
     packages=setuptools.find_packages(),
     include_package_data=True,
     classifiers=[

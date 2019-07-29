@@ -67,7 +67,7 @@ change-packs:
       image_name: "Placeholder"
 locations:
   home:
-    - pkg/ccextender/configs/
+    - pkg/ccextender/tests/
   template-makefile:
     - $!home$
     - template-makefile/
