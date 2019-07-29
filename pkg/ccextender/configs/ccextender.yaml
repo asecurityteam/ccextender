@@ -111,142 +111,142 @@ change-packs:
   input:
     template-inbound:
     template-micros:
-      service_descriptor: "benthos-input:\n
-                         \   image: ${BENTHOS_INPUT_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-nexpose-asset-producer-benthos-input\n
-                         \   tag: ${ARTIFACT_VERSION}\n
-                         \   deployRestartCount: 3\n
-                         \   ports:\n
-                         \     - \"4195:4195\"\n
-                         \   links:\n
-                         \     - gateway-incoming-private\n
-                         \     - statsd-service-sidecar\n
-                         \ gateway-incoming-private:\n
-                         \   image: ${GATEWAY_INCOMING_PRIVATE_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-awsconfig-filterd-gateway-incoming-private\n
-                         \   tag: ${ARTIFACT_VERSION}\n
-                         \   deployRestartCount: 3\n
-                         \   links:\n
-                         \     - app\n
-                         \     - statsd-service-sidecar"
-      docker_compose: "benthos-input:
-                     \   build:
-                     \     context: .
-                     \     dockerfile: benthos-input.Dockerfile
-                     \     args:
-                     \       REGISTRY: ${REGISTRY}
-                     \   image: ${IMAGE}-benthos-input:${TAG}
-                     \   environment:
-                     \     APP_INPUT_ENDPOINT: \"http://gateway-inbound-private:8082/event\"
-                     \     PORTS_BENTHOS_INPUT_STREAMS: \"4195\"
-                     \     SQS_CONFIG_QUEUE_URL: \"\"
-                     \     SQS_CONFIG_QUEUE_REGION: \"\"\n
-                     \ gateway-incoming-private:
-                     \   build:
-                     \     context: .
-                     \     dockerfile: gateway-incoming-private.Dockerfile
-                     \     args:
-                     \       REGISTRY: ${REGISTRY}
-                     \   image: ${IMAGE}-gateway-incoming-private:${TAG}
-                     \   environment:
-                     \     PORTS_GATEWAY_INCOMING_PRIVATE: 8082
-                     \     APP_ENDPOINT: \"http://app:8081\""
+      service_descriptor: "\ benthos-input:\n
+                           \   image: ${BENTHOS_INPUT_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-nexpose-asset-producer-benthos-input\n
+                           \   tag: ${ARTIFACT_VERSION}\n
+                           \   deployRestartCount: 3\n
+                           \   ports:\n
+                           \     - \"4195:4195\"\n
+                           \   links:\n
+                           \     - gateway-incoming-private\n
+                           \     - statsd-service-sidecar\n
+                           \ gateway-incoming-private:\n
+                           \   image: ${GATEWAY_INCOMING_PRIVATE_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-awsconfig-filterd-gateway-incoming-private\n
+                           \   tag: ${ARTIFACT_VERSION}\n
+                           \   deployRestartCount: 3\n
+                           \   links:\n
+                           \     - app\n
+                           \     - statsd-service-sidecar"
+      docker_compose: "\ benthos-input:
+                       \   build:
+                       \     context: .
+                       \     dockerfile: benthos-input.Dockerfile
+                       \     args:
+                       \       REGISTRY: ${REGISTRY}
+                       \   image: ${IMAGE}-benthos-input:${TAG}
+                       \   environment:
+                       \     APP_INPUT_ENDPOINT: \"http://gateway-inbound-private:8082/event\"
+                       \     PORTS_BENTHOS_INPUT_STREAMS: \"4195\"
+                       \     SQS_CONFIG_QUEUE_URL: \"\"
+                       \     SQS_CONFIG_QUEUE_REGION: \"\"\n
+                       \ gateway-incoming-private:
+                       \   build:
+                       \     context: .
+                       \     dockerfile: gateway-incoming-private.Dockerfile
+                       \     args:
+                       \       REGISTRY: ${REGISTRY}
+                       \   image: ${IMAGE}-gateway-incoming-private:${TAG}
+                       \   environment:
+                       \     PORTS_GATEWAY_INCOMING_PRIVATE: 8082
+                       \     APP_ENDPOINT: \"http://app:8081\""
     template-makefile:
-      makefile_image: "BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input\n
-                     \ GATEWAY_INCOMING_PRIVATE_IMAGE_NAME := $(APP_IMAGE_NAME)-gateway-incoming-private"
-      makefile_hack: "MICROS_HACK_ARTIFACT_BENTHOS_INPUT := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_INPUT_IMAGE_NAME)\n
-                    \ MICROS_HACK_ARTIFACT_GW_INCOMING_PRIVATE := docker.atl-paas.net$(IMAGE_PATH)/$(GATEWAY_INCOMING_PRIVATE_IMAGE_NAME)"
-      makefile_hack_deploy: "BENTHOS_INPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_INPUT) \\\n
-                           \ GW_INCOMING_PRIVATE_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_GW_INCOMING_PRIVATE) \\"
+      makefile_image: "\ BENTHOS_INPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-input\n
+                       \ GATEWAY_INCOMING_PRIVATE_IMAGE_NAME := $(APP_IMAGE_NAME)-gateway-incoming-private"
+      makefile_hack: "\ MICROS_HACK_ARTIFACT_BENTHOS_INPUT := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_INPUT_IMAGE_NAME)\n
+                      \ MICROS_HACK_ARTIFACT_GW_INCOMING_PRIVATE := docker.atl-paas.net$(IMAGE_PATH)/$(GATEWAY_INCOMING_PRIVATE_IMAGE_NAME)"
+      makefile_hack_deploy: "\ BENTHOS_INPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_INPUT) \\\n
+                             \ GW_INCOMING_PRIVATE_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_GW_INCOMING_PRIVATE) \\"
   output:
     template-outbound:
     template-micros:
-      service_descriptor: "benthos-output:\n
-                         \   image: ${BENTHOS_OUTPUT_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-nexpose-asset-producer-benthos-output\n
-                         \   tag: ${ARTIFACT_VERSION}\n
-                         \   deployRestartCount: 3\n
-                         \   ports:\n
-                         \     - \"4196:4196\"\n
-                         \   links:\n
-                         \     - statsd-service-sidecar\n
-                         \ gateway-outbound:\n
-                         \   image: ${GWO_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-ipam-facade-gateway-outbound\n
-                         \   tag: ${ARTIFACT_VERSION}\n
-                         \   deployRestartCount: 3\n
-                         \   links:\n
-                         \     - benthos-output\n
-                         \     - statsd-service-sidecar\n
-                         \   ports:\n
-                         \     - \"8086:8086\""
-      docker_compose: "benthos-output:
-                     \   build:
-                     \     context: .
-                     \     dockerfile: benthos-output.Dockerfile
-                     \     args:
-                     \       REGISTRY: ${REGISTRY}
-                     \   image: ${IMAGE}-benthos-output:${TAG}
-                     \   environment:
-                     \     PORTS_BENTHOS_OUTPUT: 8086
-                     \     SQS_OUTPUT_QUEUE_URL: \"\"
-                     \     SQS_OUTPUT_QUEUE_REGION: \"\"
-                     \ gateway-outbound:
-                     \  build:
-                     \    context: .
-                     \    dockerfile: gateway-outbound.Dockerfile
-                     \  image: ${IMAGE}-gateway-outbound:${TAG}
-                     \  environment:
-                     \    SERVERFULL_RUNTIME_STATS_OUTPUT: DATADOG
-                     \    SERVERFULL_RUNTIME_STATS_DATADOG_PACKETSIZE: 32768
-                     \    SERVERFULL_RUNTIME_STATS_DATADOG_TAGS:
-                     \    SERVERFULL_RUNTIME_STATS_DATADOG_FLUSHINTERVAL: 10s
-                     \    SERVERFULL_RUNTIME_STATS_DATADOG_ADDRESS: statsd:8125
-                     \    HTTPPRODUCER_API_HOST: http://benthos-output:4196
-                     \  ports:
-                     \    - 8082:8082"
+      service_descriptor: "\ benthos-output:\n
+                           \   image: ${BENTHOS_OUTPUT_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-nexpose-asset-producer-benthos-output\n
+                           \   tag: ${ARTIFACT_VERSION}\n
+                           \   deployRestartCount: 3\n
+                           \   ports:\n
+                           \     - \"4196:4196\"\n
+                           \   links:\n
+                           \     - statsd-service-sidecar\n
+                           \ gateway-outbound:\n
+                           \   image: ${GWO_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-ipam-facade-gateway-outbound\n
+                           \   tag: ${ARTIFACT_VERSION}\n
+                           \   deployRestartCount: 3\n
+                           \   links:\n
+                           \     - benthos-output\n
+                           \     - statsd-service-sidecar\n
+                           \   ports:\n
+                           \     - \"8086:8086\""
+      docker_compose: "\ benthos-output:
+                       \   build:
+                       \     context: .
+                       \     dockerfile: benthos-output.Dockerfile
+                       \     args:
+                       \       REGISTRY: ${REGISTRY}
+                       \   image: ${IMAGE}-benthos-output:${TAG}
+                       \   environment:
+                       \     PORTS_BENTHOS_OUTPUT: 8086
+                       \     SQS_OUTPUT_QUEUE_URL: \"\"
+                       \     SQS_OUTPUT_QUEUE_REGION: \"\"
+                       \ gateway-outbound:
+                       \  build:
+                       \    context: .
+                       \    dockerfile: gateway-outbound.Dockerfile
+                       \  image: ${IMAGE}-gateway-outbound:${TAG}
+                       \  environment:
+                       \    SERVERFULL_RUNTIME_STATS_OUTPUT: DATADOG
+                       \    SERVERFULL_RUNTIME_STATS_DATADOG_PACKETSIZE: 32768
+                       \    SERVERFULL_RUNTIME_STATS_DATADOG_TAGS:
+                       \    SERVERFULL_RUNTIME_STATS_DATADOG_FLUSHINTERVAL: 10s
+                       \    SERVERFULL_RUNTIME_STATS_DATADOG_ADDRESS: statsd:8125
+                       \    HTTPPRODUCER_API_HOST: http://benthos-output:4196
+                       \  ports:
+                       \    - 8082:8082"
     template-makefile:
-      makefile_image: "BENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output\n
-                     \ GATEWAY_OUTBOUND_IMAGE_NAME := $(APP_IMAGE_NAME)-gateway-outbound"
-      makefile_hack: "MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_OUTPUT_IMAGE_NAME)\n
-                    \ MICROS_HACK_ARTIFACT_GW_OUTBOUND := docker.atl-paas.net$(IMAGE_PATH)/$(GATEWAY_OUTBOUND_IMAGE_NAME)"
-      makefile_hack_deploy: "BENTHOS_OUTPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT) \\\n
-                           \ GW_OUTBOUND_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_GW_OUTBOUND) \\"
+      makefile_image: "\ BENTHOS_OUTPUT_IMAGE_NAME := $(APP_IMAGE_NAME)-benthos-output\n
+                       \ GATEWAY_OUTBOUND_IMAGE_NAME := $(APP_IMAGE_NAME)-gateway-outbound"
+      makefile_hack: "\ MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT := docker.atl-paas.net$(IMAGE_PATH)/$(BENTHOS_OUTPUT_IMAGE_NAME)\n
+                      \ MICROS_HACK_ARTIFACT_GW_OUTBOUND := docker.atl-paas.net$(IMAGE_PATH)/$(GATEWAY_OUTBOUND_IMAGE_NAME)"
+      makefile_hack_deploy: "\ BENTHOS_OUTPUT_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_BENTHOS_OUTPUT) \\\n
+                             \ GW_OUTBOUND_ARTIFACT_NAME=$(MICROS_HACK_ARTIFACT_GW_OUTBOUND) \\"
   streamer-manager:
     template-streamer-manager:
     template-micros:
-      service_descriptor: "streamer-manager:\n
-                         \   image: ${SM_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-awsconfig-transformerd-streamer-manager\n
-                         \   tag: ${ARTIFACT_VERSION}\n
-                         \   links:\n
-                         \     - benthos-input\n
-                         \     - statsd-service-sidecar\n
-                         \   ports:\n
-                         \     - \"8085:8085\"\n
-                         \   deployRestartCount: 3\n
-                         \ lifecycle:\n
-                         \   image: docker.atl-paas.net/sox/asecurityteam/microslifecycle\n
-                         \   tag: latest\n
-                         \   links:\n
-                         \     - streamer-manager\n
-                         \     - statsd-service-sidecar\n
-                         \   deployRestartCount: 3"
-      docker_compose: "streamer-manager:
-                     \   build:
-                     \     context: .
-                     \     dockerfile: streamer-manager.Dockerfile
-                     \     args:
-                     \       REGISTRY: ${REGISTRY}
-                     \   image: ${IMAGE}-streamer-manager:${TAG}
-                     \   ports:
-                     \     - 8085:8085
-                     \   environment:
-                     \     STREAMERMANAGER_HTTPSERVER_ADDRESS: \":8085\"
-                     \     STREAMERMANAGER_LOGGER_OUTPUT: \"STDOUT\"
-                     \    STREAMERMANAGER_STATS_OUTPUT: \"NULL\"
-                     \     STREAMERMANAGER_DIRECTORY: \"/configs\"
-                     \     STREAMERMANAGER_PATH: \"/lifecycle\"
-                     \     STREAMERMANAGER_DESTINATION: \"http://benthos-input:4195\"
-                     \ lifecycle:
-                     \   image: docker.atl-paas.net/sox/asecurityteam/microslifecycle:latest
-                     \   environment:
-                     \     MICROSLIFECYCLE_HTTP_NOTIFICATIONS: \"http://streamer-manager:8085/lifecycle\""
+      service_descriptor: "\ streamer-manager:\n
+                           \   image: ${SM_ARTIFACT_NAME} #docker.atl-paas.net/sox/asecurityteam/sec-awsconfig-transformerd-streamer-manager\n
+                           \   tag: ${ARTIFACT_VERSION}\n
+                           \   links:\n
+                           \     - benthos-input\n
+                           \     - statsd-service-sidecar\n
+                           \   ports:\n
+                           \     - \"8085:8085\"\n
+                           \   deployRestartCount: 3\n
+                           \ lifecycle:\n
+                           \   image: docker.atl-paas.net/sox/asecurityteam/microslifecycle\n
+                           \   tag: latest\n
+                           \   links:\n
+                           \     - streamer-manager\n
+                           \     - statsd-service-sidecar\n
+                           \   deployRestartCount: 3"
+      docker_compose: "\ streamer-manager:
+                       \   build:
+                       \     context: .
+                       \     dockerfile: streamer-manager.Dockerfile
+                       \     args:
+                       \       REGISTRY: ${REGISTRY}
+                       \   image: ${IMAGE}-streamer-manager:${TAG}
+                       \   ports:
+                       \     - 8085:8085
+                       \   environment:
+                       \     STREAMERMANAGER_HTTPSERVER_ADDRESS: \":8085\"
+                       \     STREAMERMANAGER_LOGGER_OUTPUT: \"STDOUT\"
+                       \    STREAMERMANAGER_STATS_OUTPUT: \"NULL\"
+                       \     STREAMERMANAGER_DIRECTORY: \"/configs\"
+                       \     STREAMERMANAGER_PATH: \"/lifecycle\"
+                       \     STREAMERMANAGER_DESTINATION: \"http://benthos-input:4195\"
+                       \ lifecycle:
+                       \   image: docker.atl-paas.net/sox/asecurityteam/microslifecycle:latest
+                       \   environment:
+                       \     MICROSLIFECYCLE_HTTP_NOTIFICATIONS: \"http://streamer-manager:8085/lifecycle\""
     template-makefile:
       makefile_image: "STREAMER_MANAGER_IMAGE_NAME := $(APP_IMAGE_NAME)-streamer-manager"
       makefile_hack: "MICROS_HACK_ARTIFACT_SM := docker.atl-paas.net$(IMAGE_PATH)/$(STREAMER_MANAGER_IMAGE_NAME)"
