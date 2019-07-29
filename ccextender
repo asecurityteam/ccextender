@@ -12,6 +12,4 @@ o) OUTDIR=${OPTARG};;
 esac
 done
 
-
-
 python3 -m pkg.ccextender.ccextender -c $CONFIG -o $OUTDIR

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 '''A module building off of the cookiecutter templating application to create logical builds with
 branching options and the ability to compose many different templates into one repository building
 system.'''
@@ -13,7 +14,7 @@ REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
 
 #pylint: disable=too-few-public-methods
 class Bcolors:
-    '''A strucut for commonly used terminal colors'''
+    '''A struct for commonly used terminal colors'''
     HEADER = '\033[95m'
     OKBLUE = '\033[96m'
     OKGREEN = '\033[92m'
@@ -230,7 +231,7 @@ class CCExtender:
             query:
             {
                 prompt: "<query asking for user decision>",
-                include-if: <option from previous query
+                include-if: <option from previous query>
             }
             option 1:
             {
@@ -321,8 +322,7 @@ if __name__ == "__main__":
     ARGDICT = dict()
 
     for arg in ARGS:
-        #pylint: disable=literal-comparison
-        if ARGS[arg] is not None and ARGS[arg] is not "None":
+        if ARGS[arg] is not None and ARGS[arg] != "None":
             ARGDICT[arg] = ARGS[arg]
 
     CCExtender(**ARGDICT)
