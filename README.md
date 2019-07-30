@@ -62,11 +62,11 @@ cookiecutter - a templating application
 
 
 ```bash
-pip3 install cookiecutter oyaml
+pip install cookiecutter oyaml
 ```
 
 ```bash
-pip3 install ccextender
+pip install --upgrade git+git://github.com/asecurityteam/ccextender
 ```
 
 <a id="markdown-usage" name="usage"></a>
