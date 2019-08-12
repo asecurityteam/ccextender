@@ -1,4 +1,4 @@
-#!/usr/bin/env python3.5
+#!/usr/bin/env python3.7
 '''A module building off of the cookiecutter templating application to create logical builds with
 branching options and the ability to compose many different templates into one repository building
 system.'''
