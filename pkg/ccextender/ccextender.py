@@ -1,13 +1,15 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python3.7
 '''A module building off of the cookiecutter templating application to create logical builds with
 branching options and the ability to compose many different templates into one repository building
 system.'''
+
 
 from collections import OrderedDict
 import argparse
 import os
 from cookiecutter.main import cookiecutter
 import oyaml as yaml
+from slugify import slugify
 
 PACKAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
@@ -24,7 +26,6 @@ class Bcolors:
     BOLD = '\033[1m'
     UNDERLINE = '\033[4m'
     VIOLET = '\033[35m'
-
 
 class CCExtender:
     '''CCExtender reads in a configuration file (ccx_config) for its build information, and then
@@ -211,8 +212,15 @@ class CCExtender:
         else:
             response = input("[%s%s%s]: " % (Bcolors.OKBLUE, variable, Bcolors.ENDC))
 
+        ###
+
+        ### Response Manipulations ###
+        if "slug" in variable:
+            response = slugify(response)
+
+        ###
+
         print()
-        ####
 
         if response == "":
             return default

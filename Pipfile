@@ -9,6 +9,7 @@ cookiecutter = "*"
 pathlib2 = "*"
 codecov = "*"
 twine = "*"
+python-slugify = "*"
 
 [requires]
 python_version = "3"
