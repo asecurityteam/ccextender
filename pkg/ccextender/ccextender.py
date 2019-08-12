@@ -9,6 +9,7 @@ import argparse
 import os
 from cookiecutter.main import cookiecutter
 import oyaml as yaml
+from slugify import slugify
 
 PACKAGE_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 REQ_FILE = os.path.join(PACKAGE_DIR, "pkg/ccextender/configs/ccextender.yaml")
@@ -211,8 +212,15 @@ class CCExtender:
         else:
             response = input("[%s%s%s]: " % (Bcolors.OKBLUE, variable, Bcolors.ENDC))
 
+        ###
+
+        ### Response Manipulations ###
+        if "slug" in variable:
+            response = slugify(response)
+
+        ###
+
         print()
-        ####
 
         if response == "":
             return default
