@@ -1,5 +1,7 @@
 <a id="markdown-CCExtender" name="CCExtender"></a>
 # CCExtender -- Cookiecutter with branching builds
+[![Build Status](https://travis-ci.com/asecurityteam/ccextender.png?branch=master)](https://travis-ci.com/asecurityteam/ccextender)
+[![codecov.io](https://codecov.io/github/asecurityteam/ccextender/coverage.svg?branch=master)](https://codecov.io/github/asecurityteam/ccextender?branch=master)
 
 https://github.com/asecurityteam/ccextender
 
