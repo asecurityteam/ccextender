@@ -1,18 +1,17 @@
 [packages]
-pytest = "*"
-coverage = "*"
-setuptools = "*"
-pytest-cov = "*"
-oyaml = "*"
-pylint = "*"
-cookiecutter = "*"
-pathlib2 = "*"
-codecov = "*"
-twine = "*"
-python-slugify = "*"
+pytest = "==5.3.5"
+coverage = "==4.5.4"
+pytest-cov = "==2.8.1"
+oyaml = "==0.9"
+pylint = "==2.4.4"
+cookiecutter = "==1.7.0"
+pathlib2 = "==2.3.5"
+codecov = "==2.0.16"
+twine = "==1.15.0"
+python-slugify = "==4.0.0"
 
 [requires]
 python_version = "3"
 
 [dev-packages]
-pylint = "*"
+pylint = "==2.4.4"
